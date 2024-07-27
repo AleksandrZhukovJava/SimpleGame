@@ -1,6 +1,6 @@
-package org.example.model.enemy;
+package org.example.enemy.model.lvl1;
 
-import org.example.model.player.Player;
+import org.example.player.Player;
 
 import java.awt.*;
 
@@ -10,8 +10,8 @@ public abstract class AbstractEnemy {
     protected int damage;
     protected int level;
 
-    public AbstractEnemy(String name, int health, int damage, int level) {
-        this.health = health;
+    public AbstractEnemy(String name, int damage, int level) {
+        this.health = getHealth();
         this.damage = damage;
         this.name = name;
         this.level = level;

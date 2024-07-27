@@ -1,10 +1,10 @@
-package org.example.service;
+package org.example.enemy;
 
-import org.example.model.enemy.AbstractEnemy;
-import org.example.model.enemy.lvl1.impl.Boss;
-import org.example.model.enemy.lvl1.impl.Orc;
-import org.example.model.enemy.lvl1.impl.Skeleton;
-import org.example.model.enemy.lvl1.impl.Zombie;
+import org.example.enemy.model.lvl1.AbstractEnemy;
+import org.example.enemy.model.lvl1.impl.Boss;
+import org.example.enemy.model.lvl1.impl.Orc;
+import org.example.enemy.model.lvl1.impl.Skeleton;
+import org.example.enemy.model.lvl1.impl.Zombie;
 
 import java.util.ArrayList;
 import java.util.List;

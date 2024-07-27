@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.service.ProcessGame;
+import org.example.battle.ProcessBattle;
 
 import javax.swing.*;
 
@@ -14,7 +14,7 @@ public class Game extends JFrame {
     }
 
     public Game() {
-        add(new ProcessGame());
+        add(new ProcessBattle());
         setTitle("First game try");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);

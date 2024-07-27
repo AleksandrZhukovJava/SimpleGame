@@ -1,10 +1,10 @@
-package org.example.model.enemy.lvl1.impl;
+package org.example.enemy.model.lvl1.impl;
 
-import org.example.model.enemy.lvl1.EnemyLevelOne;
+import org.example.enemy.model.lvl1.EnemyLevelOne;
 
 public class Zombie extends EnemyLevelOne {
     public Zombie() {
-        super("Zombie", 50, 15);
+        super("Zombie", 15);
     }
 
     @Override

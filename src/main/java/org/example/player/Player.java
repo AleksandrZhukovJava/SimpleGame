@@ -1,6 +1,6 @@
-package org.example.model.player;
+package org.example.player;
 
-import org.example.model.enemy.AbstractEnemy;
+import org.example.enemy.model.lvl1.AbstractEnemy;
 
 import java.awt.*;
 
@@ -38,10 +38,14 @@ public class Player {
         this.currentHealth = mainHealth;
     }
 
-    public void lvlUp() {
+    public void lvlUpAndIncreaseDamage(int amount) {
         level++;
-        mainDamage++;
-        mainHealth++;
+        mainDamage += amount;
+    }
+
+    public void lvlUpAndIncreaseHealth(int amount) {
+        level++;
+        mainHealth += amount;
     }
 
     public int getCurrentDamage() {

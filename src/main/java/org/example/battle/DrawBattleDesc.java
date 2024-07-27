@@ -1,11 +1,11 @@
-package org.example.service;
+package org.example.battle;
 
-import org.example.model.enemy.AbstractEnemy;
-import org.example.model.player.Player;
+import org.example.enemy.model.lvl1.AbstractEnemy;
+import org.example.player.Player;
 
 import java.awt.*;
 
-public class DrawGameDesc {
+public class DrawBattleDesc {
     public void drawDesc(Graphics g, Player player, AbstractEnemy enemy) {
         player.draw(g);
         enemy.draw(g);
