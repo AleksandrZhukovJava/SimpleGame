@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 .idea
 /src/test
+todo.txt
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

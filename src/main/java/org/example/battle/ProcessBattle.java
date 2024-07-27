@@ -3,11 +3,13 @@ package org.example.battle;
 import org.example.enemy.model.AbstractEnemy;
 import org.example.enemy.model.EnemyStorage;
 import org.example.player.Player;
+import org.example.player.dto.Attack;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 public class ProcessBattle extends JPanel implements ActionListener {
     private final Timer timer;
@@ -15,12 +17,11 @@ public class ProcessBattle extends JPanel implements ActionListener {
     private final JButton restartButton;
     private final EnemyStorage enemyChooser = new EnemyStorage();
     private final DrawBattleDesc gameDesc = new DrawBattleDesc();
-    private final LevelUpChoosingDesc levelUpChoosing = new LevelUpChoosingDesc();
+    private final LevelUpChoosingDesc levelUpChoosingDesc = new LevelUpChoosingDesc();
+    private final EndGameDesc endGameDesc = new EndGameDesc();
     private AbstractEnemy enemy;
     private boolean gameOver = false;
-    private boolean playerTurn = true;
-
-    // Панель и текстовая область для отображения журнала
+    private boolean playerTurn = new Random().nextBoolean();
     private final JTextArea logArea;
 
     public ProcessBattle() {
@@ -59,8 +60,12 @@ public class ProcessBattle extends JPanel implements ActionListener {
                 enemy.attack(player);
                 appendLog("%s наносит %s урона".formatted(enemy.getName(), enemy.getDamage()));
             } else {
-                player.attack(enemy);
-                appendLog("%s наносит %s урона".formatted(player.getName(), player.getCurrentDamage()));
+                Attack attack = player.attack(enemy);
+                if (attack.isCritical()) {
+                    appendLog("%s наносит критичкский урон %s!".formatted(player.getName(), attack.getDamage()));
+                } else {
+                    appendLog("%s наносит %s урона".formatted(player.getName(), attack.getDamage()));
+                }
             }
             playerTurn = !playerTurn;
             repaint();
@@ -76,44 +81,18 @@ public class ProcessBattle extends JPanel implements ActionListener {
             restartButton.setVisible(true);
             player.addExperience(enemy.getExperienceValue());
             if (player.checkLevelUp()) {
-                levelUpChoosing.showLevelUpDialog(this);
+                levelUpChoosingDesc.execute(this);
                 appendLog("%s достигает нового уровня %s!\n".formatted(player.getName(), player.getLevel()));
             }
             showResetButton();
         } else if (player.getCurrentHealth() <= 0) {
             gameOver = true;
             timer.stop();
-            endGame();
+            endGameDesc.execute(this);
         }
     }
 
-
-    private void endGame() {
-        // Создаем модальное диалоговое окно
-        JDialog dialog = new JDialog((Frame) null, "Game Over", true);
-        dialog.setLayout(new BorderLayout());
-
-        // Создаем панель для кнопки
-        JPanel buttonPanel = new JPanel();
-        JButton restartButton = new JButton("Начать заново");
-        restartButton.addActionListener(e -> {
-            dialog.dispose();
-            player.backToDefault();
-            resetGame();
-        });
-        buttonPanel.add(restartButton);
-
-        // Добавляем сообщение и кнопку в диалоговое окно
-        dialog.add(new JLabel("Вы проиграли, ваш уровень: %s".formatted(player.getLevel()), SwingConstants.CENTER),
-                BorderLayout.CENTER);
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
-
-        dialog.setSize(300, 150);
-        dialog.setLocationRelativeTo(this); // Центрируем окно по отношению к основному окну
-        dialog.setVisible(true);
-    }
-
-    private void resetGame() {
+    public void resetGame() {
         player.refreshEntity();
         enemy.refreshEntity();
         enemy = enemyChooser.getRandomLvlOneEnemy();
