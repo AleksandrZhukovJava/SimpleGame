@@ -11,5 +11,4 @@ public class Orc extends EnemyLevelOne {
     public int getMainHealth() {
         return 100;
     }
-
 }

@@ -11,5 +11,4 @@ public class Elemental extends EnemyLevelOne {
     public int getMainHealth() {
         return 200;
     }
-
 }

@@ -11,5 +11,4 @@ public class Zombie extends EnemyLevelOne {
     public int getMainHealth() {
         return 50;
     }
-
 }
