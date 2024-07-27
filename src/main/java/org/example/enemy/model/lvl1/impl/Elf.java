@@ -11,5 +11,4 @@ public class Elf extends EnemyLevelOne {
     public int getMainHealth() {
         return 15;
     }
-
 }

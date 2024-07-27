@@ -11,5 +11,4 @@ public class Pirate extends EnemyLevelOne {
     public int getMainHealth() {
         return 100;
     }
-
 }

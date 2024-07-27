@@ -3,7 +3,9 @@ package org.example.enemy.model;
 import lombok.Getter;
 import org.example.player.Player;
 
+import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 @Getter
 public abstract class AbstractEnemy {
@@ -22,8 +24,25 @@ public abstract class AbstractEnemy {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.BLUE);
-        g.fillRect(650, 250, 50, 50);
+        URL resource = getClass().getResource("/static/%s.jpg".formatted(name.toLowerCase()));
+        Image icon = null;
+        if (resource != null) {
+            icon = new ImageIcon(resource).getImage();
+        }
+
+        if (icon != null) {
+            g.drawImage(icon, 600, 150, 180, 200, null);
+        } else {
+            g.setColor(Color.BLUE);
+            g.fillRect(650, 250, 50, 50);
+        }
+    }
+
+
+    public Image getEnemyImage() {
+
+
+        return null;
     }
 
     public void attack(Player player) {

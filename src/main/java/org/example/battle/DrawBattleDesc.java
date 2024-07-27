@@ -22,11 +22,11 @@ public class DrawBattleDesc {
     }
 
     private void drawCurrentHealth(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 20)); // Можно изменить на любой другой шрифт
+        g.setFont(new Font("Arial", Font.BOLD, 24)); // Можно изменить на любой другой шрифт
         g.setColor(Color.BLACK);
 
-        g.drawString("Player Health: " + player.getCurrentHealth(), 50, 50);
-        g.drawString("Enemy Health: " + enemy.getCurrentHealth(), 550, 50);
+        g.drawString("Player Health: " + player.getCurrentHealth(), 50, 80);
+        g.drawString("Enemy Health: " + enemy.getCurrentHealth(), 500, 80);
     }
 
     private void drawLevel(Graphics g, Player player, AbstractEnemy enemy) {
@@ -34,7 +34,7 @@ public class DrawBattleDesc {
         g.setColor(Color.BLACK);
 
         g.drawString("Level:" + player.getLevel(), 50, 370);
-        g.drawString("Level: " + enemy.getLevel(), 550, 370);
+        g.drawString("Level: " + enemy.getLevel(), 600, 370);
     }
 
     private void drawHealth(Graphics g, Player player, AbstractEnemy enemy) {
@@ -42,7 +42,7 @@ public class DrawBattleDesc {
         g.setColor(Color.BLACK);
 
         g.drawString("Health: " + player.getMainHealth(), 50, 390);
-        g.drawString("Health: " + enemy.getMainHealth(), 550, 390);
+        g.drawString("Health: " + enemy.getMainHealth(), 600, 390);
     }
 
     private void drawAttack(Graphics g, Player player, AbstractEnemy enemy) {
@@ -50,7 +50,7 @@ public class DrawBattleDesc {
         g.setColor(Color.BLACK);
 
         g.drawString("Player Attack: " + player.getMainDamage(), 50, 410);
-        g.drawString("Enemy Attack: " + enemy.getDamage(), 550, 410);
+        g.drawString("Enemy Attack: " + enemy.getDamage(), 600, 410);
     }
 
     private void drawExperience(Graphics g, Player player) {
@@ -68,6 +68,6 @@ public class DrawBattleDesc {
         g.setColor(Color.BLACK);
 
         g.drawString("Player: " + player.getName(), 50, 470);
-        g.drawString("Enemy: " + enemy.getName(), 550, 470);
+        g.drawString("Enemy: " + enemy.getName(), 600, 470);
     }
 }
