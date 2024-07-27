@@ -4,11 +4,11 @@ import org.example.enemy.model.lvl1.EnemyLevelOne;
 
 public class Skeleton extends EnemyLevelOne {
     public Skeleton() {
-        super("Skeleton", 10);
+        super("Skeleton", 10, 24);
     }
 
     @Override
-    public int getHealth() {
-        return 80;
+    public int getMainHealth() {
+        return 70;
     }
 }

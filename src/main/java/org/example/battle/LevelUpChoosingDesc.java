@@ -48,8 +48,6 @@ public class LevelUpChoosingDesc {
         });
 
         dialog.setVisible(true);
-
-        processGame.showResetButton(); // Показываем кнопку после закрытия диалогового окна
     }
 
     private void upgradePlayerHealth(ProcessBattle processGame) {

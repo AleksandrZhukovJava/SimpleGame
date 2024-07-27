@@ -1,20 +1,24 @@
 package org.example.enemy.model;
 
+import lombok.Getter;
 import org.example.player.Player;
 
 import java.awt.*;
 
+@Getter
 public abstract class AbstractEnemy {
     protected final String name;
-    protected int health;
+    protected int currentHealth;
     protected int damage;
     protected int level;
+    protected int experienceValue;
 
-    public AbstractEnemy(String name, int damage, int level) {
-        this.health = getHealth();
+    public AbstractEnemy(String name, int damage, int level, int experienceValue) {
+        this.currentHealth = getMainHealth();
         this.damage = damage;
         this.name = name;
         this.level = level;
+        this.experienceValue = experienceValue;
     }
 
     public void draw(Graphics g) {
@@ -26,29 +30,17 @@ public abstract class AbstractEnemy {
         player.decreaseHealth(damage);
     }
 
-    public void decreaseHealth(int amount) {
-        health -= amount;
+    public void decreaseHealth(int damage) {
+        if (currentHealth - damage < 0) {
+            currentHealth = 0;
+        } else {
+            currentHealth -= damage;
+        }
     }
 
-    public int getCurrentHealth() {
-        return health;
-    }
+    public abstract int getMainHealth();
 
-    public abstract int getHealth();
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void refreshEntity(){
-        this.health = getHealth();
+    public void refreshEntity() {
+        this.currentHealth = getMainHealth();
     }
 }

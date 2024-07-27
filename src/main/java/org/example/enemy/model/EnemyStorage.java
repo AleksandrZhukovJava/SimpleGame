@@ -2,6 +2,7 @@ package org.example.enemy.model;
 
 import org.example.enemy.model.lvl1.impl.Boss;
 import org.example.enemy.model.lvl1.impl.Elemental;
+import org.example.enemy.model.lvl1.impl.Elf;
 import org.example.enemy.model.lvl1.impl.Orc;
 import org.example.enemy.model.lvl1.impl.Pirate;
 import org.example.enemy.model.lvl1.impl.Skeleton;
@@ -15,10 +16,11 @@ public class EnemyStorage {
     List<AbstractEnemy> enemy_lvl_1 = new ArrayList<>();
 
     public EnemyStorage() {
-        addPercentWeightEnemy(new Orc(), 5);
-        addPercentWeightEnemy(new Skeleton(), 5);
-        addPercentWeightEnemy(new Zombie(), 5);
-        addPercentWeightEnemy(new Pirate(), 3);
+        addPercentWeightEnemy(new Orc(), 10);
+        addPercentWeightEnemy(new Skeleton(), 20);
+        addPercentWeightEnemy(new Zombie(), 15);
+        addPercentWeightEnemy(new Elf(), 5);
+        addPercentWeightEnemy(new Pirate(), 5);
         addPercentWeightEnemy(new Elemental(), 2);
         addPercentWeightEnemy(new Boss(), 1);
     }
