@@ -1,6 +1,6 @@
 package org.example.battle;
 
-import org.example.enemy.model.lvl1.AbstractEnemy;
+import org.example.enemy.model.AbstractEnemy;
 import org.example.player.Player;
 
 import java.awt.*;

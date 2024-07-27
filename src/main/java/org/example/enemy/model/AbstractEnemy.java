@@ -1,4 +1,4 @@
-package org.example.enemy.model.lvl1;
+package org.example.enemy.model;
 
 import org.example.player.Player;
 

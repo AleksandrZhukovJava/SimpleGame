@@ -1,9 +1,7 @@
 package org.example.battle;
 
-import org.example.battle.DrawBattleDesc;
-import org.example.battle.LevelUpChoosingDesc;
-import org.example.enemy.EnemyStorage;
-import org.example.enemy.model.lvl1.AbstractEnemy;
+import org.example.enemy.model.AbstractEnemy;
+import org.example.enemy.model.EnemyStorage;
 import org.example.player.Player;
 
 import javax.swing.*;

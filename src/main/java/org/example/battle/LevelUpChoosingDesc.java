@@ -19,13 +19,13 @@ public class LevelUpChoosingDesc {
         // Настраиваем кнопки и их действия
         JButton option1 = new JButton("Upgrade Health");
         option1.addActionListener(e -> {
-            handleOption1(processGame);
+            upgradePlayerHealth(processGame);
             dialog.dispose();
         });
 
         JButton option2 = new JButton("Upgrade Attack");
         option2.addActionListener(e -> {
-            handleOption2(processGame);
+            upgradePlayerAttack(processGame);
             dialog.dispose();
         });
 
@@ -52,15 +52,13 @@ public class LevelUpChoosingDesc {
         processGame.showResetButton(); // Показываем кнопку после закрытия диалогового окна
     }
 
-    private void handleOption1(ProcessBattle processGame) {
-        // Действие для кнопки "Upgrade Health"
+    private void upgradePlayerHealth(ProcessBattle processGame) {
         processGame.getPlayer().lvlUpAndIncreaseHealth(10);
-        JOptionPane.showMessageDialog(null, "Health Upgraded!");
+        //JOptionPane.showMessageDialog(null, "Health Upgraded!");
     }
 
-    private void handleOption2(ProcessBattle processGame) {
-        // Действие для кнопки "Upgrade Attack"
+    private void upgradePlayerAttack(ProcessBattle processGame) {
         processGame.getPlayer().lvlUpAndIncreaseDamage(5);
-        JOptionPane.showMessageDialog(null, "Attack Upgraded!");
+        //JOptionPane.showMessageDialog(null, "Attack Upgraded!");
     }
 }
