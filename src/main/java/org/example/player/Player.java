@@ -1,9 +1,11 @@
 package org.example.player;
 
+import lombok.Getter;
 import org.example.enemy.model.AbstractEnemy;
 
 import java.awt.*;
 
+@Getter
 public class Player {
     private final String name = "Sasha";
     private int currentHealth = 100;
@@ -11,6 +13,7 @@ public class Player {
     private int mainHealth = 100;
     private int mainDamage = 10;
     private int level = 1;
+    private int experience = 0;
 
     public void draw(Graphics g) {
         g.setColor(Color.RED);
@@ -22,16 +25,13 @@ public class Player {
     }
 
     public void decreaseHealth(int damage) {
-        currentHealth -= damage;
+        if (currentHealth - damage < 0) {
+            currentHealth = 0;
+        } else {
+            currentHealth -= damage;
+        }
     }
 
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
-
-    public int getHealth() {
-        return mainHealth;
-    }
 
     public void refreshEntity() {
         this.currentDamage = mainDamage;
@@ -48,20 +48,21 @@ public class Player {
         mainHealth += amount;
     }
 
-    public int getCurrentDamage() {
-        return currentDamage;
+    public void addExperience(int amount) {
+        experience += amount;
     }
 
-    public int getDamage() {
-        return mainDamage;
+    public boolean checkLevelUp() {
+        return Levels.values()[level - 1].getExperienceNeeded() <= experience;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public String getName() {
-        return name;
+    public void backToDefault() {
+        this.currentHealth = 100;
+        this.currentDamage = 10;
+        this.mainHealth = 100;
+        this.mainDamage = 10;
+        this.level = 1;
+        this.experience = 0;
     }
 }
 
