@@ -2,10 +2,12 @@ package org.example.player;
 
 import lombok.Getter;
 import org.example.enemy.model.AbstractEnemy;
+import org.example.player.dto.Attack;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.Random;
 
 @Getter
 public class Player {
@@ -16,6 +18,7 @@ public class Player {
     private int mainDamage = 10;
     private int level = 1;
     private int experience = 0;
+    private int criticalChance = 0;
 
     public void draw(Graphics g) {
         Image icon = getEnemyImage();
@@ -34,8 +37,15 @@ public class Player {
         }
         return null;
     }
-    public void attack(AbstractEnemy enemy) {
-        enemy.decreaseHealth(currentDamage);
+
+    public Attack attack(AbstractEnemy enemy) {
+        boolean critical = new Random().nextInt(0, 100) <= criticalChance;
+        int damage = critical ? currentDamage * 2 : currentDamage;
+        enemy.decreaseHealth(damage);
+        return Attack.builder()
+                .damage(damage)
+                .critical(critical)
+                .build();
     }
 
     public void decreaseHealth(int damage) {
@@ -52,7 +62,7 @@ public class Player {
         this.currentHealth = mainHealth;
     }
 
-    public void lvlUpAndIncreaseDamage(int amount) {
+    public void lvlUpAndIncreaseDamage(int amount) { //todo фабрикой
         level++;
         mainDamage += amount;
     }
@@ -60,6 +70,11 @@ public class Player {
     public void lvlUpAndIncreaseHealth(int amount) {
         level++;
         mainHealth += amount;
+    }
+
+    public void lvlUpAndIncreaseCriticalChance() {
+        level++;
+        criticalChance += 5;
     }
 
     public void addExperience(int amount) {
