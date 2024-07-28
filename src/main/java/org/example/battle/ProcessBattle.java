@@ -57,8 +57,8 @@ public class ProcessBattle extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (!gameOver) {
             if (playerTurn) {
-                enemy.attack(player);
-                appendLog("%s наносит %s урона".formatted(enemy.getName(), enemy.getDamage()));
+                Attack attack = enemy.attack(player);
+                appendLog("%s наносит %s урона".formatted(enemy.getName(), attack.getDamage()));
             } else {
                 Attack attack = player.attack(enemy);
                 if (attack.isCritical()) {

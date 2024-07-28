@@ -49,8 +49,10 @@ public class DrawBattleDesc {
         g.setFont(new Font("Arial", Font.BOLD, 14)); // Можно изменить на любой другой шрифт
         g.setColor(Color.BLACK);
 
-        g.drawString("Player Attack: " + player.getMainDamage(), 50, 410);
-        g.drawString("Enemy Attack: " + enemy.getDamage(), 600, 410);
+        g.drawString("Player Attack: %s-%s".formatted(player.getCurrentMinDamage(), player.getCurrentMaxDamage()),
+                50, 410);
+        g.drawString("Enemy Attack: %s-%s".formatted(enemy.getMinDamage(), enemy.getMaxDamage()),
+                600, 410);
     }
 
     private void drawExperience(Graphics g, Player player) {

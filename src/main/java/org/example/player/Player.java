@@ -11,11 +11,14 @@ import java.util.Random;
 
 @Getter
 public class Player {
+    private final Random random = new Random();
     private final String name = "Sasha";
     private int currentHealth = 100;
-    private int currentDamage = 10;
     private int mainHealth = 100;
-    private int mainDamage = 10;
+    private int currentMinDamage = 8;
+    private int currentMaxDamage = 12;
+    private int mainMinDamage = 8;
+    private int mainMaxDamage = 12;
     private int level = 1;
     private int experience = 0;
     private int criticalChance = 0;
@@ -38,9 +41,13 @@ public class Player {
         return null;
     }
 
+    public int getCurrentDamage(){
+        return random.nextInt(currentMinDamage, currentMaxDamage);
+    }
+
     public Attack attack(AbstractEnemy enemy) {
-        boolean critical = new Random().nextInt(0, 100) <= criticalChance;
-        int damage = critical ? currentDamage * 2 : currentDamage;
+        boolean critical = random.nextInt(0, 100) <= criticalChance;
+        int damage = critical ? getCurrentDamage() * 2 : getCurrentDamage();
         enemy.decreaseHealth(damage);
         return Attack.builder()
                 .damage(damage)
@@ -58,13 +65,15 @@ public class Player {
 
 
     public void refreshEntity() {
-        this.currentDamage = mainDamage;
+        this.currentMinDamage = mainMinDamage;
+        this.currentMaxDamage = mainMaxDamage;
         this.currentHealth = mainHealth;
     }
 
     public void lvlUpAndIncreaseDamage(int amount) { //todo фабрикой
         level++;
-        mainDamage += amount;
+        mainMinDamage += amount;
+        mainMaxDamage += amount;
     }
 
     public void lvlUpAndIncreaseHealth(int amount) {
@@ -87,9 +96,11 @@ public class Player {
 
     public void backToDefault() {
         this.currentHealth = 100;
-        this.currentDamage = 10;
         this.mainHealth = 100;
-        this.mainDamage = 10;
+        this.currentMinDamage = 8;
+        this.currentMaxDamage = 12;
+        this.mainMinDamage = 8;
+        this.mainMaxDamage = 12;
         this.level = 1;
         this.experience = 0;
     }

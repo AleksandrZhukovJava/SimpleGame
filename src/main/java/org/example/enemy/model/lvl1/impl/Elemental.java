@@ -4,7 +4,7 @@ import org.example.enemy.model.lvl1.EnemyLevelOne;
 
 public class Elemental extends EnemyLevelOne {
     public Elemental() {
-        super("Elemental", 8, 60);
+        super("Elemental", 6, 12, 60);
     }
 
     @Override
