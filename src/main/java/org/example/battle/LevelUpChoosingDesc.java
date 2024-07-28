@@ -68,10 +68,20 @@ public class LevelUpChoosingDesc {
     private JButton getNewLevelUpOptionButton(String message, Consumer<Player> movement,
                                               JDialog dialog) {
         JButton option = new JButton(message);
+
+        option.setFont(new Font("Arial", Font.BOLD, 18));
+        option.setPreferredSize(new Dimension(200, 50));
+
         option.addActionListener(e -> {
             movement.accept(player);
             dialog.dispose();
         });
+
+        option.setBackground(new Color(70, 130, 180)); // Цвет фона
+        option.setForeground(Color.WHITE); // Цвет текста
+        option.setFocusPainted(false);
+        option.setBorderPainted(false);
+
         return option;
     }
 }

@@ -98,6 +98,9 @@ public class Player {
     }
 
     public boolean checkLevelUp() {
+        if (level == Levels.values().length){
+            return false;
+        }
         return Levels.values()[level - 1].getExperienceNeeded() <= experience;
     }
 
