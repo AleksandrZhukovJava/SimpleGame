@@ -4,7 +4,7 @@ import org.example.enemy.model.lvl1.EnemyLevelOne;
 
 public class Zombie extends EnemyLevelOne {
     public Zombie() {
-        super("Zombie", 15, 20);
+        super("Zombie", 12, 18, 20);
     }
 
     @Override
