@@ -4,6 +4,8 @@ import org.example.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,29 +17,41 @@ public class LevelUpChoosingDesc {
 
     public void execute(ProcessBattle processGame) {
         player = processGame.getPlayer();
-        JDialog dialog = new JDialog((Frame) null, "Lvl up", true);
+        JDialog dialog = new JDialog((Frame) null, "Level Up!", true);
         dialog.setLayout(new BorderLayout());
 
-        dialog.add(new JLabel("Lvl up! choose upgrade option%nYou beat: %s".formatted(processGame.getEnemy().getName()),
-                        SwingConstants.CENTER),
-                BorderLayout.CENTER);
+        // Load the background image
+        ImageIcon backgroundImageIcon = new ImageIcon("path/to/your/background/image.png");
+        JLabel backgroundLabel = new JLabel(backgroundImageIcon); //todo не работает
+        backgroundLabel.setLayout(new BorderLayout());
 
+        // Create the title label
+        JLabel titleLabel = new JLabel("<html>Level Up!<br>Choose upgrade option<br></html>", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Cooper Black", Font.BOLD, 20));
+        titleLabel.setForeground(new Color(50, 50, 50)); // Text color
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Create the button panel
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(1, 2));
+        buttonPanel.setLayout(new GridLayout(2, 2, 10, 10));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        buttonPanel.setOpaque(false);
 
         fillRandomImprovementButtons(dialog, buttonPanel);
 
-        // Добавляем панель с кнопками в диалоговое окно
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
+        backgroundLabel.add(titleLabel, BorderLayout.NORTH);
+        backgroundLabel.add(buttonPanel, BorderLayout.CENTER);
 
-        dialog.setSize(600, 300);
+        dialog.add(backgroundLabel);
+
+        dialog.setSize(600, 400);
         dialog.setLocationRelativeTo(processGame);
 
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+        dialog.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                // Просто игнорируем попытки закрытия
+            public void windowClosing(WindowEvent e) {
+                // Ignore close attempts
             }
         });
 
@@ -58,6 +72,10 @@ public class LevelUpChoosingDesc {
                 "Critical chance",
                 Player::lvlUpAndIncreaseCriticalChance,
                 dialog));
+        buttons.add(getNewLevelUpOptionButton(
+                "Missing chance",
+                Player::lvlUpAndIncreaseMissingChance,
+                dialog));
 
         buttons.stream()
                 .limit(player.getLevelUpOptionsAmount())
@@ -69,16 +87,16 @@ public class LevelUpChoosingDesc {
                                               JDialog dialog) {
         JButton option = new JButton(message);
 
-        option.setFont(new Font("Arial", Font.BOLD, 18));
-        option.setPreferredSize(new Dimension(200, 50));
+        option.setFont(new Font("Cooper Black", Font.PLAIN, 28));
+        option.setPreferredSize(new Dimension(200, 100));
 
         option.addActionListener(e -> {
             movement.accept(player);
             dialog.dispose();
         });
 
-        option.setBackground(new Color(70, 130, 180)); // Цвет фона
-        option.setForeground(Color.WHITE); // Цвет текста
+        option.setBackground(new Color(140, 140, 140)); // Цвет фона
+        option.setForeground(new Color(80, 20, 20)); // Цвет текста
         option.setFocusPainted(false);
         option.setBorderPainted(false);
 

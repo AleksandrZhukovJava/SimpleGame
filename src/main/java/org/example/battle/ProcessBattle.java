@@ -4,6 +4,7 @@ import org.example.enemy.model.AbstractEnemy;
 import org.example.enemy.model.EnemyStorage;
 import org.example.player.Player;
 import org.example.player.dto.Attack;
+import org.example.player.dto.AttackResult;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,16 +57,10 @@ public class ProcessBattle extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!gameOver) {
-            if (playerTurn) {
-                Attack attack = enemy.attack(player);
-                appendLog("%s наносит %s урона".formatted(enemy.getName(), attack.getDamage()));
+            if (!playerTurn) {
+                enemyTurn();
             } else {
-                Attack attack = player.attack(enemy);
-                if (attack.isCritical()) {
-                    appendLog("%s наносит критичкский урон %s!".formatted(player.getName(), attack.getDamage()));
-                } else {
-                    appendLog("%s наносит %s урона".formatted(player.getName(), attack.getDamage()));
-                }
+                playerTurn();
             }
             playerTurn = !playerTurn;
             repaint();
@@ -76,6 +71,31 @@ public class ProcessBattle extends JPanel implements ActionListener {
                 enemyWin();
             }
         }
+    }
+
+    private void enemyTurn() {
+        Attack enemyAttack = enemy.getAttack();
+        AttackResult enemyAttackResult = player.takeHit(enemyAttack);
+        if (enemyAttackResult.isMiss()) {
+            appendLog("%s промахивается!".formatted(enemy.getName()));
+        } else {
+            appendLog("%s наносит %s урона".formatted(enemy.getName(), enemyAttack.getDamage()));
+        }
+    }
+
+    private void playerTurn() {
+        Attack playerAttack = player.getAttack();
+        AttackResult playerAttackResult = enemy.takeHit(playerAttack);
+        if (playerAttackResult.isMiss()) {
+            appendLog("%s промахивается!".formatted(player.getName()));
+        } else {
+            if (playerAttack.isCritical()) {
+                appendLog("%s наносит критичкский урон %s!".formatted(player.getName(), playerAttack.getDamage()));
+            } else {
+                appendLog("%s наносит %s урона".formatted(player.getName(), playerAttack.getDamage()));
+            }
+        }
+
     }
 
     public void resetGame() {
@@ -90,7 +110,7 @@ public class ProcessBattle extends JPanel implements ActionListener {
         clearLog();
     }
 
-    private void playerWin(){
+    private void playerWin() {
         appendLog("%s повержен! Получено %s опыта\n".formatted(enemy.getName(), enemy.getExperienceValue()));
         gameOver = true;
         timer.stop();
@@ -103,7 +123,7 @@ public class ProcessBattle extends JPanel implements ActionListener {
         showResetButton();
     }
 
-    private void enemyWin(){
+    private void enemyWin() {
         gameOver = true;
         timer.stop();
         endGameDesc.execute(this);

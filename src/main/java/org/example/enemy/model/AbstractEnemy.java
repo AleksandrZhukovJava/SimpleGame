@@ -1,8 +1,8 @@
 package org.example.enemy.model;
 
 import lombok.Getter;
-import org.example.player.Player;
 import org.example.player.dto.Attack;
+import org.example.player.dto.AttackResult;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +19,8 @@ public abstract class AbstractEnemy {
     protected int maxDamage;
     protected int level;
     protected int experienceValue;
+    protected int missingChance = 0;
+    protected int criticalChance = 0;
 
     public AbstractEnemy(String name, int minDamage, int maxDamage, int level, int experienceValue) {
         this.currentHealth = getMainHealth();
@@ -30,7 +32,7 @@ public abstract class AbstractEnemy {
     }
 
     public void draw(Graphics g) {
-        URL resource = getClass().getResource("/static/%s.jpg".formatted(name.toLowerCase()));
+        URL resource = getClass().getResource("/static/enemy/%s.jpg".formatted(name.toLowerCase()));
         Image icon = null;
         if (resource != null) {
             icon = new ImageIcon(resource).getImage();
@@ -48,21 +50,26 @@ public abstract class AbstractEnemy {
         return random.nextInt(minDamage, maxDamage);
     }
 
-    public Attack attack(Player player) {
-        int damage = getCurrentDamage();
-        player.decreaseHealth(damage);
+    public Attack getAttack() {
         return Attack.builder()
-                .damage(damage)
+                .damage(getCurrentDamage())
                 .critical(false)
+                .accuracy(0)
                 .build();
     }
 
-    public void decreaseHealth(int damage) {
-        if (currentHealth - damage < 0) {
-            currentHealth = 0;
-        } else {
-            currentHealth -= damage;
+    public AttackResult takeHit(Attack attack) {
+        boolean miss = random.nextInt(0, 100) <= (missingChance - criticalChance);
+        if (!miss) {
+            if (currentHealth - attack.getDamage() < 0) {
+                currentHealth = 0;
+            } else {
+                currentHealth -= attack.getDamage();
+            }
         }
+        return AttackResult.builder()
+                .isMiss(miss)
+                .build();
     }
 
     public abstract int getMainHealth();
