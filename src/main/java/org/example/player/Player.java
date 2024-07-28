@@ -110,6 +110,10 @@ public class Player {
         this.mainMaxDamage = 12;
         this.level = 1;
         this.experience = 0;
+        this.criticalChance = 0;
+        this.levelUpOptionsAmount = 2;
+        this.lvlUpAndIncreaseHealthFactor = 20;
+        this.lvlUpAndIncreaseDamageFactor = 5;
     }
 }
 
