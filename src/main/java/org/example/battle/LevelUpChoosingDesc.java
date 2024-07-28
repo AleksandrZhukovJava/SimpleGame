@@ -1,47 +1,36 @@
 package org.example.battle;
 
+import org.example.player.Player;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class LevelUpChoosingDesc {
+    private final Set<JButton> buttons = new HashSet<>();
+    private Player player;
+
     public void execute(ProcessBattle processGame) {
-        JDialog dialog = new JDialog((Frame) null, "Lvl up! choose option", true);
+        player = processGame.getPlayer();
+        JDialog dialog = new JDialog((Frame) null, "Lvl up", true);
         dialog.setLayout(new BorderLayout());
 
-        dialog.add(new JLabel("You beat: " + processGame.getEnemy().getName(), SwingConstants.CENTER),
+        dialog.add(new JLabel("Lvl up! choose upgrade option%nYou beat: %s".formatted(processGame.getEnemy().getName()),
+                        SwingConstants.CENTER),
                 BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
 
-        // Настраиваем кнопки и их действия
-        JButton option1 = new JButton("Upgrade Health");
-        option1.addActionListener(e -> {
-            processGame.getPlayer().lvlUpAndIncreaseHealth(10);
-            dialog.dispose();
-        });
-
-        JButton option2 = new JButton("Upgrade Attack");
-        option2.addActionListener(e -> {
-            processGame.getPlayer().lvlUpAndIncreaseDamage(5);
-            dialog.dispose();
-        });
-
-        JButton option3 = new JButton("Upgrade critical chance");
-        option3.addActionListener(e -> {
-            processGame.getPlayer().lvlUpAndIncreaseCriticalChance();
-            dialog.dispose();
-        });
-
-        // Добавляем кнопки на панель
-        buttonPanel.add(option1);
-        buttonPanel.add(option2);
-        buttonPanel.add(option3);
+        fillRandomImprovementButtons(dialog, buttonPanel);
 
         // Добавляем панель с кнопками в диалоговое окно
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        dialog.setSize(300, 150);
+        dialog.setSize(600, 300);
         dialog.setLocationRelativeTo(processGame);
 
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
@@ -53,5 +42,36 @@ public class LevelUpChoosingDesc {
         });
 
         dialog.setVisible(true);
+        buttons.clear();
+    }
+
+    private void fillRandomImprovementButtons(JDialog dialog, JPanel panel) {
+        buttons.add(getNewLevelUpOptionButton(
+                "Health",
+                Player::lvlUpAndIncreaseHealth,
+                dialog));
+        buttons.add(getNewLevelUpOptionButton(
+                "Attack",
+                Player::lvlUpAndIncreaseDamage,
+                dialog));
+        buttons.add(getNewLevelUpOptionButton(
+                "Critical chance",
+                Player::lvlUpAndIncreaseCriticalChance,
+                dialog));
+
+        buttons.stream()
+                .limit(player.getLevelUpOptionsAmount())
+                .sorted(Comparator.comparing(JButton::getText))
+                .forEach(panel::add);
+    }
+
+    private JButton getNewLevelUpOptionButton(String message, Consumer<Player> movement,
+                                              JDialog dialog) {
+        JButton option = new JButton(message);
+        option.addActionListener(e -> {
+            movement.accept(player);
+            dialog.dispose();
+        });
+        return option;
     }
 }

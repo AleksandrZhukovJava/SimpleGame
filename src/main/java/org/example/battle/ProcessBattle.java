@@ -69,26 +69,12 @@ public class ProcessBattle extends JPanel implements ActionListener {
             }
             playerTurn = !playerTurn;
             repaint();
-            checkBattleIsEnd();
-        }
-    }
 
-    private void checkBattleIsEnd() {
-        if (enemy.getCurrentHealth() <= 0) {
-            appendLog("%s повержен! Получено %s опыта\n".formatted(enemy.getName(), enemy.getExperienceValue()));
-            gameOver = true;
-            timer.stop();
-            restartButton.setVisible(true);
-            player.addExperience(enemy.getExperienceValue());
-            if (player.checkLevelUp()) {
-                levelUpChoosingDesc.execute(this);
-                appendLog("%s достигает нового уровня %s!\n".formatted(player.getName(), player.getLevel()));
+            if (enemy.getCurrentHealth() <= 0) {
+                playerWin();
+            } else if (player.getCurrentHealth() <= 0) {
+                enemyWin();
             }
-            showResetButton();
-        } else if (player.getCurrentHealth() <= 0) {
-            gameOver = true;
-            timer.stop();
-            endGameDesc.execute(this);
         }
     }
 
@@ -102,6 +88,25 @@ public class ProcessBattle extends JPanel implements ActionListener {
         timer.start();
         repaint();
         clearLog();
+    }
+
+    private void playerWin(){
+        appendLog("%s повержен! Получено %s опыта\n".formatted(enemy.getName(), enemy.getExperienceValue()));
+        gameOver = true;
+        timer.stop();
+        restartButton.setVisible(true);
+        player.addExperience(enemy.getExperienceValue());
+        while (player.checkLevelUp()) {
+            levelUpChoosingDesc.execute(this);
+            appendLog("%s достигает нового уровня %s!\n".formatted(player.getName(), player.getLevel()));
+        }
+        showResetButton();
+    }
+
+    private void enemyWin(){
+        gameOver = true;
+        timer.stop();
+        endGameDesc.execute(this);
     }
 
     public AbstractEnemy getEnemy() {
