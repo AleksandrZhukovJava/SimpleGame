@@ -22,6 +22,9 @@ public class Player {
     private int level = 1;
     private int experience = 0;
     private int criticalChance = 0;
+    private int levelUpOptionsAmount = 2;
+    private int lvlUpAndIncreaseHealthFactor = 20;
+    private int lvlUpAndIncreaseDamageFactor = 5;
 
     public void draw(Graphics g) {
         Image icon = getEnemyImage();
@@ -41,7 +44,7 @@ public class Player {
         return null;
     }
 
-    public int getCurrentDamage(){
+    public int getCurrentDamage() {
         return random.nextInt(currentMinDamage, currentMaxDamage);
     }
 
@@ -70,15 +73,15 @@ public class Player {
         this.currentHealth = mainHealth;
     }
 
-    public void lvlUpAndIncreaseDamage(int amount) { //todo фабрикой
+    public void lvlUpAndIncreaseDamage() { //todo фабрикой
         level++;
-        mainMinDamage += amount;
-        mainMaxDamage += amount;
+        mainMinDamage += lvlUpAndIncreaseDamageFactor;
+        mainMaxDamage += lvlUpAndIncreaseDamageFactor;
     }
 
-    public void lvlUpAndIncreaseHealth(int amount) {
+    public void lvlUpAndIncreaseHealth() {
         level++;
-        mainHealth += amount;
+        mainHealth += lvlUpAndIncreaseHealthFactor;
     }
 
     public void lvlUpAndIncreaseCriticalChance() {
@@ -88,6 +91,10 @@ public class Player {
 
     public void addExperience(int amount) {
         experience += amount;
+    }
+
+    public void increaseLevelOptionsAmount() {
+        levelUpOptionsAmount++;
     }
 
     public boolean checkLevelUp() {
