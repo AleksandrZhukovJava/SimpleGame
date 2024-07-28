@@ -7,5 +7,9 @@ import lombok.Getter;
 @Getter
 public class Attack {
     private int damage;
+    /**
+     * criticalChance
+     */
+    private int accuracy;
     private boolean critical;
 }

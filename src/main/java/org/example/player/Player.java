@@ -1,8 +1,8 @@
 package org.example.player;
 
 import lombok.Getter;
-import org.example.enemy.model.AbstractEnemy;
 import org.example.player.dto.Attack;
+import org.example.player.dto.AttackResult;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +22,11 @@ public class Player {
     private int level = 1;
     private int experience = 0;
     private int criticalChance = 0;
+    private int criticalMultiplicationFactor = 2;
     private int levelUpOptionsAmount = 2;
     private int lvlUpAndIncreaseHealthFactor = 20;
     private int lvlUpAndIncreaseDamageFactor = 5;
+    private int missingChance = 0;
 
     public void draw(Graphics g) {
         Image icon = getEnemyImage();
@@ -37,7 +39,7 @@ public class Player {
     }
 
     public Image getEnemyImage() {
-        URL resource = getClass().getResource("/static/player.png");
+        URL resource = getClass().getResource("/static/player/player.png");
         if (resource != null) {
             return new ImageIcon(resource).getImage();
         }
@@ -48,22 +50,28 @@ public class Player {
         return random.nextInt(currentMinDamage, currentMaxDamage);
     }
 
-    public Attack attack(AbstractEnemy enemy) {
+    public Attack getAttack() {
         boolean critical = random.nextInt(0, 100) <= criticalChance;
-        int damage = critical ? getCurrentDamage() * 2 : getCurrentDamage();
-        enemy.decreaseHealth(damage);
+        int damage = critical ? getCurrentDamage() * criticalMultiplicationFactor : getCurrentDamage();
         return Attack.builder()
                 .damage(damage)
                 .critical(critical)
+                .accuracy(criticalChance)
                 .build();
     }
 
-    public void decreaseHealth(int damage) {
-        if (currentHealth - damage < 0) {
-            currentHealth = 0;
-        } else {
-            currentHealth -= damage;
+    public AttackResult takeHit(Attack attack) {
+        boolean miss = random.nextInt(0, 100) <= (missingChance - criticalChance);
+        if (!miss) {
+            if (currentHealth - attack.getDamage() < 0) {
+                currentHealth = 0;
+            } else {
+                currentHealth -= attack.getDamage();
+            }
         }
+        return AttackResult.builder()
+                .isMiss(miss)
+                .build();
     }
 
 
@@ -89,6 +97,11 @@ public class Player {
         criticalChance += 5;
     }
 
+    public void lvlUpAndIncreaseMissingChance() {
+        level++;
+        missingChance += 5;
+    }
+
     public void addExperience(int amount) {
         experience += amount;
     }
@@ -98,7 +111,7 @@ public class Player {
     }
 
     public boolean checkLevelUp() {
-        if (level == Levels.values().length){
+        if (level == Levels.values().length) {
             return false;
         }
         return Levels.values()[level - 1].getExperienceNeeded() <= experience;
@@ -114,9 +127,11 @@ public class Player {
         this.level = 1;
         this.experience = 0;
         this.criticalChance = 0;
+        this.criticalMultiplicationFactor = 2;
         this.levelUpOptionsAmount = 2;
         this.lvlUpAndIncreaseHealthFactor = 20;
         this.lvlUpAndIncreaseDamageFactor = 5;
+        this.missingChance = 0;
     }
 }
 
