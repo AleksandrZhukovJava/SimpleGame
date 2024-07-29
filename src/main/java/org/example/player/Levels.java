@@ -28,6 +28,16 @@ public enum Levels {
     LVL17(6300),
     LVL18(7100),
     LVL19(8000),
-    LVL20(8900);
+    LVL20(9000),
+    LVL21(10000),
+    LVL22(11100),
+    LVL23(12200),
+    LVL24(13400),
+    LVL25(14600),
+    LVL26(15900),
+    LVL27(17200),
+    LVL28(18600),
+    LVL29(20000),
+    LVL30(21500);
     private final int experienceNeeded;
 }

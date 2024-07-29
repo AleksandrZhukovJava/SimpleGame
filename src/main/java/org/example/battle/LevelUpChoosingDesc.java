@@ -25,13 +25,11 @@ public class LevelUpChoosingDesc {
         JLabel backgroundLabel = new JLabel(backgroundImageIcon); //todo не работает
         backgroundLabel.setLayout(new BorderLayout());
 
-        // Create the title label
         JLabel titleLabel = new JLabel("<html>Level Up!<br>Choose upgrade option<br></html>", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Cooper Black", Font.BOLD, 20));
         titleLabel.setForeground(new Color(50, 50, 50)); // Text color
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Create the button panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(2, 2, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
