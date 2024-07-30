@@ -22,9 +22,9 @@ public class EnemyStorage {
         addPercentWeightEnemy(new Zombie(), 15);
         addPercentWeightEnemy(new Elf(), 5);
         addPercentWeightEnemy(new Pirate(), 5);
-        addPercentWeightEnemy(new Elemental(), 2);
+        addPercentWeightEnemy(new Elemental(), 3);
         addPercentWeightEnemy(new Boss(), 1);
-        addPercentWeightEnemy(new IceDemon(), 50);
+        addPercentWeightEnemy(new IceDemon(), 2);
     }
 
     public AbstractEnemy getRandomLvlOneEnemy() {

@@ -12,7 +12,7 @@ public class IceDemon extends EnemyLevelOne {
 
     @Override
     public int getMainHealth() {
-        return 1;
+        return 150;
     }
 
     @Override
