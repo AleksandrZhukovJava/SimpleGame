@@ -1,6 +1,7 @@
 package org.example.enemy.model;
 
 import lombok.Getter;
+import org.example.items.Item;
 import org.example.player.dto.Attack;
 import org.example.player.dto.AttackResult;
 
@@ -22,6 +23,8 @@ public abstract class AbstractEnemy {
     protected int missingChance = 0;
     protected int criticalChance = 0;
 
+    protected Item[] drop = new Item[1000];
+
     public AbstractEnemy(String name, int minDamage, int maxDamage, int level, int experienceValue) {
         this.currentHealth = getMainHealth();
         this.minDamage = minDamage;
@@ -29,6 +32,7 @@ public abstract class AbstractEnemy {
         this.name = name;
         this.level = level;
         this.experienceValue = experienceValue;
+        addDrop();
     }
 
     public void draw(Graphics g) {
@@ -60,13 +64,15 @@ public abstract class AbstractEnemy {
 
     public AttackResult takeHit(Attack attack) {
         boolean miss = random.nextInt(0, 100) <= (missingChance - criticalChance);
+
         if (!miss) {
-            if (currentHealth - attack.getDamage() < 0) {
+            if (currentHealth - attack.getDamage() <= 0) {
                 currentHealth = 0;
             } else {
                 currentHealth -= attack.getDamage();
             }
         }
+
         return AttackResult.builder()
                 .isMiss(miss)
                 .build();
@@ -76,5 +82,12 @@ public abstract class AbstractEnemy {
 
     public void refreshEntity() {
         this.currentHealth = getMainHealth();
+    }
+
+    protected abstract void addDrop();
+
+    //todo принимать модификаторы?
+    public Item getDrop() {
+        return drop[random.nextInt(0, drop.length - 1)];
     }
 }

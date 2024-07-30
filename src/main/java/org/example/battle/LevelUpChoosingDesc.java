@@ -49,7 +49,6 @@ public class LevelUpChoosingDesc {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Ignore close attempts
             }
         });
 
