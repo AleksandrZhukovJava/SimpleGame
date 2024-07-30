@@ -2,6 +2,8 @@ package org.example.battle;
 
 import org.example.enemy.model.AbstractEnemy;
 import org.example.enemy.model.EnemyStorage;
+import org.example.items.Item;
+import org.example.options.BattleSpeed;
 import org.example.player.Player;
 import org.example.player.dto.Attack;
 import org.example.player.dto.AttackResult;
@@ -20,10 +22,13 @@ public class ProcessBattle extends JPanel implements ActionListener {
     private final DrawBattleDesc gameDesc = new DrawBattleDesc();
     private final LevelUpChoosingDesc levelUpChoosingDesc = new LevelUpChoosingDesc();
     private final EndGameDesc endGameDesc = new EndGameDesc();
+    private final InventoryDesc inventoryDesc = new InventoryDesc();
     private AbstractEnemy enemy;
     private boolean gameOver = false;
     private boolean playerTurn = new Random().nextBoolean();
     private final JTextArea logArea;
+
+    private JButton inventoryButton;
 
     public ProcessBattle() {
         setLayout(null);
@@ -33,7 +38,7 @@ public class ProcessBattle extends JPanel implements ActionListener {
         timer.start();
 
         restartButton = new JButton("Next battle");
-        restartButton.setBounds(350, 500, 100, 30);
+        restartButton.setBounds(250, 400, 300, 50);
         restartButton.addActionListener(e -> resetGame());
         add(restartButton);
         restartButton.setVisible(false);
@@ -46,6 +51,13 @@ public class ProcessBattle extends JPanel implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(logArea);
         scrollPane.setBounds(200, 150, 400, 200); // Центрируем панель в окне
         add(scrollPane);
+
+        // Создаем и добавляем кнопку инвентаря
+        inventoryButton = new JButton("Inventory");
+        inventoryButton.setFont(new Font("Arial", Font.BOLD, 16));
+        inventoryButton.setBounds(50, 520, 120, 30); // Установите положение и размер кнопки
+        inventoryButton.addActionListener(e -> inventoryDesc.openInventory(this));
+        add(inventoryButton);
     }
 
     @Override
@@ -90,12 +102,12 @@ public class ProcessBattle extends JPanel implements ActionListener {
             appendLog("%s промахивается!".formatted(player.getName()));
         } else {
             if (playerAttack.isCritical()) {
-                appendLog("%s наносит критичкский урон %s!".formatted(player.getName(), playerAttack.getDamage()));
+                appendLog(
+                        "%s наносит критический урон %s!".formatted(player.getName(), playerAttack.getDamage()));
             } else {
                 appendLog("%s наносит %s урона".formatted(player.getName(), playerAttack.getDamage()));
             }
         }
-
     }
 
     public void resetGame() {
@@ -120,6 +132,13 @@ public class ProcessBattle extends JPanel implements ActionListener {
             levelUpChoosingDesc.execute(this);
             appendLog("%s достигает нового уровня %s!\n".formatted(player.getName(), player.getLevel()));
         }
+
+        Item drop = enemy.getDrop();
+        if (drop != null) {
+            player.addItemToInventory(drop);
+            appendLog("%s выбивает %s!".formatted(player.getName(), drop.getName()));
+        }
+
         showResetButton();
     }
 

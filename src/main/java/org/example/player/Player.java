@@ -1,6 +1,8 @@
 package org.example.player;
 
-import lombok.Getter;
+import org.example.items.Item;
+import org.example.items.improve.ImproveType;
+import org.example.operations.InventoryIsFullException;
 import org.example.player.dto.Attack;
 import org.example.player.dto.AttackResult;
 
@@ -9,7 +11,6 @@ import java.awt.*;
 import java.net.URL;
 import java.util.Random;
 
-@Getter
 public class Player {
     private final Random random = new Random();
     private final String name = "Sasha";
@@ -27,18 +28,28 @@ public class Player {
     private int lvlUpAndIncreaseHealthFactor = 20;
     private int lvlUpAndIncreaseDamageFactor = 5;
     private int missingChance = 0;
+    private Item[][] inventory = new Item[8][5];
+    private Equipment equipment = new Equipment();
+
+    public String getName() {
+        return name;
+    }
+
+    public int getLevel() {
+        return level;
+    }
 
     public void draw(Graphics g) {
-        Image icon = getEnemyImage();
+        Image icon = getPlayerImage();
         if (icon != null) {
-            g.drawImage(icon, 0, 150, 200, 200, null); // Отображаем изображение на панели
+            g.drawImage(icon, 0, 150, 200, 200, null);
         } else {
             g.setColor(Color.BLUE);
-            g.fillRect(650, 250, 50, 50); // Если изображение не загрузилось, отображаем квадрат
+            g.fillRect(650, 250, 50, 50);
         }
     }
 
-    public Image getEnemyImage() {
+    public Image getPlayerImage() {
         URL resource = getClass().getResource("/static/player/player.png");
         if (resource != null) {
             return new ImageIcon(resource).getImage();
@@ -47,23 +58,61 @@ public class Player {
     }
 
     public int getCurrentDamage() {
-        return random.nextInt(currentMinDamage, currentMaxDamage);
+        return random.nextInt(currentMinDamage, currentMaxDamage) + equipment.getAdditionalAmount(ImproveType.ATTACK);
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth + equipment.getAdditionalAmount(ImproveType.HEALTH);
+    }
+
+    public int getCriticalChance() {
+        return criticalChance + equipment.getAdditionalAmount(ImproveType.CRITICAL_CHANCE);
+    }
+
+    public int getMissingChance() {
+        return missingChance + equipment.getAdditionalAmount(ImproveType.MISSING_CHANCE);
+    }
+
+    public int getMainHealth() {
+        return mainHealth + equipment.getAdditionalAmount(ImproveType.HEALTH);
+    }
+
+    public int getCurrentMinDamage() {
+        return currentMinDamage + equipment.getAdditionalAmount(ImproveType.ATTACK);
+    }
+
+    public int getCurrentMaxDamage() {
+        return currentMaxDamage + equipment.getAdditionalAmount(ImproveType.ATTACK);
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    //todo придумать как динамически защищать
+    public int getLevelUpOptionsAmount() {
+        int amount = levelUpOptionsAmount + equipment.getAdditionalAmount(ImproveType.LVL_UP_CHOICE_AMOUNT_IMPROVE);
+        return Math.min(amount, 4);
+    }
+
+    public Item[][] getInventory() {
+        return inventory;
     }
 
     public Attack getAttack() {
-        boolean critical = random.nextInt(0, 100) <= criticalChance;
+        boolean critical = random.nextInt(0, 100) <= getCriticalChance();
         int damage = critical ? getCurrentDamage() * criticalMultiplicationFactor : getCurrentDamage();
         return Attack.builder()
                 .damage(damage)
                 .critical(critical)
-                .accuracy(criticalChance)
+                .accuracy(getCriticalChance())
                 .build();
     }
 
     public AttackResult takeHit(Attack attack) {
-        boolean miss = random.nextInt(0, 100) <= (missingChance - criticalChance);
+        boolean miss = random.nextInt(0, 100) <= (getMissingChance() - getCriticalChance());
         if (!miss) {
-            if (currentHealth - attack.getDamage() < 0) {
+            if (getCurrentHealth() - attack.getDamage() < 0) {
                 currentHealth = 0;
             } else {
                 currentHealth -= attack.getDamage();
@@ -117,6 +166,50 @@ public class Player {
         return Levels.values()[level - 1].getExperienceNeeded() <= experience;
     }
 
+    public void addItemToInventory(Item item) {
+        for (int i = 0; i < inventory.length; i++) {
+            for (int j = 0; j < inventory[i].length; j++) {
+                if (inventory[i][j] == null) {
+                    inventory[i][j] = item;
+                    return;
+                }
+            }
+        }
+        throw new InventoryIsFullException();
+    }
+
+    public void removeItemFromInventory(int x, int y) {
+        for (int i = 0; i < inventory.length; i++) {
+            for (int j = 0; j < inventory[i].length; j++) {
+                if (i == x && j == y) {
+                    inventory[i][j] = null;
+                    return;
+                }
+            }
+        }
+    }
+
+    public void equipItem(int x, int y) {
+        Item item = inventory[x][y];
+        if (item == null) {
+            return;
+        }
+        Item oldItem = equipment.getEquipment().put(item.getType(), item);
+        inventory[x][y] = oldItem;
+
+    }
+
+    @Deprecated
+    private void printInventory() {
+        for (int i = 0; i < inventory.length; i++) {
+            for (int j = 0; j < inventory[0].length; j++) {
+                System.out.print(inventory[i][j] == null ? "|o" : "|x");
+            }
+            System.out.print("|");
+            System.out.println();
+        }
+    }
+
     public void backToDefault() {
         this.currentHealth = 100;
         this.mainHealth = 100;
@@ -132,6 +225,8 @@ public class Player {
         this.lvlUpAndIncreaseHealthFactor = 20;
         this.lvlUpAndIncreaseDamageFactor = 5;
         this.missingChance = 0;
+        this.inventory = new Item[8][5];
+        this.equipment = new Equipment();
     }
 }
 

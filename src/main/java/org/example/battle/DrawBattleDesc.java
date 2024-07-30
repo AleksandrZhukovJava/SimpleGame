@@ -4,9 +4,11 @@ import org.example.enemy.model.AbstractEnemy;
 import org.example.player.Levels;
 import org.example.player.Player;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class DrawBattleDesc {
+
     public void drawDesc(Graphics g, Player player, AbstractEnemy enemy) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -51,15 +53,15 @@ public class DrawBattleDesc {
         g.drawRect(playerBarX, playerBarY, barWidth, barHeight);
         g.drawRect(enemyBarX, enemyBarY, barWidth, barHeight);
 
-        // Hp bars
         g.setFont(new Font("Cooper Black", Font.BOLD, 18));
         g.setColor(Color.BLACK);
         g.drawString("HP: " + playerHealth + "/" + playerMaxHealth, playerBarX, playerBarY - 5);
         g.drawString("HP: " + enemyHealth + "/" + enemyMaxHealth, enemyBarX, enemyBarY - 5);
     }
 
+    // Остальные методы для отображения характеристик
     private void drawLevel(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14)); // Можно изменить на любой другой шрифт
+        g.setFont(new Font("Arial", Font.BOLD, 14));
         g.setColor(Color.BLACK);
 
         g.drawString("Level:" + player.getLevel(), 50, 370);
@@ -67,7 +69,7 @@ public class DrawBattleDesc {
     }
 
     private void drawHealth(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14)); // Можно изменить на любой другой шрифт
+        g.setFont(new Font("Arial", Font.BOLD, 14));
         g.setColor(Color.BLACK);
 
         g.drawString("Health: " + player.getMainHealth(), 50, 390);
@@ -75,17 +77,15 @@ public class DrawBattleDesc {
     }
 
     private void drawAttack(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14)); // Можно изменить на любой другой шрифт
+        g.setFont(new Font("Arial", Font.BOLD, 14));
         g.setColor(Color.BLACK);
 
-        g.drawString("Attack: %s-%s".formatted(player.getCurrentMinDamage(), player.getCurrentMaxDamage()),
-                50, 410);
-        g.drawString("Attack: %s-%s".formatted(enemy.getMinDamage(), enemy.getMaxDamage()),
-                600, 410);
+        g.drawString("Attack: %s-%s".formatted(player.getCurrentMinDamage(), player.getCurrentMaxDamage()), 50, 410);
+        g.drawString("Attack: %s-%s".formatted(enemy.getMinDamage(), enemy.getMaxDamage()), 600, 410);
     }
 
     private void drawExperience(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14)); // Можно изменить на любой другой шрифт
+        g.setFont(new Font("Arial", Font.BOLD, 14));
         g.setColor(Color.BLACK);
 
         g.drawString("Experience: %s (%s)".formatted(
@@ -96,27 +96,23 @@ public class DrawBattleDesc {
     }
 
     private void drawCriticalChance(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14)); // Можно изменить на любой другой шрифт
+        g.setFont(new Font("Arial", Font.BOLD, 14));
         g.setColor(Color.BLACK);
 
-        g.drawString("Crit chance: %s%%".formatted(player.getCriticalChance()),
-                50, 450);
-        g.drawString("Crit chance: %s%%".formatted(enemy.getCriticalChance()),
-                600, 450);
+        g.drawString("Crit chance: %s%%".formatted(player.getCriticalChance()), 50, 450);
+        g.drawString("Crit chance: %s%%".formatted(enemy.getCriticalChance()), 600, 450);
     }
 
     private void drawMissingChance(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14)); // Можно изменить на любой другой шрифт
+        g.setFont(new Font("Arial", Font.BOLD, 14));
         g.setColor(Color.BLACK);
 
-        g.drawString("Miss chance: %s%%".formatted(player.getMissingChance()),
-                50, 470);
-        g.drawString("Miss chance: %s%%".formatted(enemy.getMissingChance()),
-                600, 470);
+        g.drawString("Miss chance: %s%%".formatted(player.getMissingChance()), 50, 470);
+        g.drawString("Miss chance: %s%%".formatted(enemy.getMissingChance()), 600, 470);
     }
 
     private void drawName(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14)); // Можно изменить на любой другой шрифт
+        g.setFont(new Font("Arial", Font.BOLD, 14));
         g.setColor(Color.BLACK);
 
         g.drawString("Name: " + player.getName(), 50, 490);
