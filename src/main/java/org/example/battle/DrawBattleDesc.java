@@ -4,7 +4,6 @@ import org.example.enemy.model.AbstractEnemy;
 import org.example.player.Levels;
 import org.example.player.Player;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class DrawBattleDesc {
@@ -26,8 +25,8 @@ public class DrawBattleDesc {
     }
 
     private void drawCurrentHealth(Graphics g, Player player, AbstractEnemy enemy) {
-        int playerHealth = player.getCurrentHealth();
-        int playerMaxHealth = player.getMainHealth();
+        int playerHealth = player.getCurrentHealthWithEquipment();
+        int playerMaxHealth = player.getMainHealthWithEquipment();
         int enemyHealth = enemy.getCurrentHealth();
         int enemyMaxHealth = enemy.getMainHealth();
 
@@ -72,7 +71,7 @@ public class DrawBattleDesc {
         g.setFont(new Font("Arial", Font.BOLD, 14));
         g.setColor(Color.BLACK);
 
-        g.drawString("Health: " + player.getMainHealth(), 50, 390);
+        g.drawString("Health: " + player.getMainHealthWithEquipment(), 50, 390);
         g.drawString("Health: " + enemy.getMainHealth(), 600, 390);
     }
 

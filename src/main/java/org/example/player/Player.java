@@ -61,7 +61,7 @@ public class Player {
         return random.nextInt(currentMinDamage, currentMaxDamage) + equipment.getAdditionalAmount(ImproveType.ATTACK);
     }
 
-    public int getCurrentHealth() {
+    public int getCurrentHealthWithEquipment() {
         return currentHealth + equipment.getAdditionalAmount(ImproveType.HEALTH);
     }
 
@@ -69,11 +69,15 @@ public class Player {
         return criticalChance + equipment.getAdditionalAmount(ImproveType.CRITICAL_CHANCE);
     }
 
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
     public int getMissingChance() {
         return missingChance + equipment.getAdditionalAmount(ImproveType.MISSING_CHANCE);
     }
 
-    public int getMainHealth() {
+    public int getMainHealthWithEquipment() {
         return mainHealth + equipment.getAdditionalAmount(ImproveType.HEALTH);
     }
 
@@ -112,7 +116,7 @@ public class Player {
     public AttackResult takeHit(Attack attack) {
         boolean miss = random.nextInt(0, 100) <= (getMissingChance() - getCriticalChance());
         if (!miss) {
-            if (getCurrentHealth() - attack.getDamage() < 0) {
+            if (currentHealth - attack.getDamage() < 0) {
                 currentHealth = 0;
             } else {
                 currentHealth -= attack.getDamage();
@@ -127,7 +131,7 @@ public class Player {
     public void refreshEntity() {
         this.currentMinDamage = mainMinDamage;
         this.currentMaxDamage = mainMaxDamage;
-        this.currentHealth = mainHealth;
+        this.currentHealth = getMainHealthWithEquipment();
     }
 
     public void lvlUpAndIncreaseDamage() { //todo фабрикой
