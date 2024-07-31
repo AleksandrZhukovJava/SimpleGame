@@ -3,6 +3,7 @@ package org.example.enemy.model;
 import org.example.enemy.model.lvl1.impl.Boss;
 import org.example.enemy.model.lvl1.impl.Elemental;
 import org.example.enemy.model.lvl1.impl.Elf;
+import org.example.enemy.model.lvl1.impl.FireDemon;
 import org.example.enemy.model.lvl1.impl.IceDemon;
 import org.example.enemy.model.lvl1.impl.Orc;
 import org.example.enemy.model.lvl1.impl.Pirate;
@@ -25,6 +26,7 @@ public class EnemyStorage {
         addPercentWeightEnemy(new Elemental(), 3);
         addPercentWeightEnemy(new Boss(), 1);
         addPercentWeightEnemy(new IceDemon(), 2);
+        addPercentWeightEnemy(new FireDemon(), 1);
     }
 
     public AbstractEnemy getRandomLvlOneEnemy() {

@@ -14,7 +14,11 @@ import java.util.List;
 import java.util.Random;
 
 import static org.example.items.ItemType.AMULET;
+import static org.example.items.ItemType.ARMOR;
+import static org.example.items.ItemType.BOOTS;
+import static org.example.items.ItemType.HELM;
 import static org.example.items.ItemType.LEFT_HAND;
+import static org.example.items.ItemType.PANTS;
 import static org.example.items.ItemType.RIGHT_HAND;
 
 @AllArgsConstructor
@@ -48,7 +52,21 @@ public enum Items {
     CLUB(new Item("club",
             LEFT_HAND, List.of(new AttackImprove(2)))),
     AMULET_OF_CHOICE(new Item("Amulet of choice",
-            AMULET, List.of(new LvlUpChoiceAmountImprove())));
+            AMULET, List.of(new LvlUpChoiceAmountImprove()))),
+    ARMORY_PANTS(new Item("Armory pants",
+            PANTS, List.of(new HealthImprove(15)))),
+    HEAVY_ARMOR(new Item("Heavy armor",
+            ARMOR, List.of(new HealthImprove(80)))),
+    DEMON_HELM(new Item("Demon helm",
+            HELM, List.of(new CritChanceImprove(30)))),
+    MAGIC_BOOTS(new Item("Magic boots",
+            BOOTS, List.of(new CritChanceImprove(10),
+            new MissChanceImprove(10)))),
+    SIMPLE_BOOTS(new Item("Simple boots",
+            BOOTS, List.of(new HealthImprove(5)))),
+    FIRE_CHAINMALE(new Item("Fire chainmale",
+            ARMOR, List.of(new HealthImprove(30),
+            new AttackImprove(5))));
     private final Item item;
 
     public static List<Item> getAllItems() {

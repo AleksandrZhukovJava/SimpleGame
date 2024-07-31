@@ -17,8 +17,16 @@ public class Boss extends EnemyLevelOne {
 
     @Override
     protected void addDrop() {
-        for (int i = 0; i < (drop100Percent ? 1000 : 100); i++) {
-            this.drop[i] = Items.GIANT_AXE.getItem();
+        for (int i = 0; i < (drop100Percent ? 500 : 10); i++) {
+            if (drop[i] == null) {
+                this.drop[i] = Items.GIANT_AXE.getItem();
+
+            }
+        }
+        for (int i = 0; i < (drop100Percent ? 1000 : 10); i++) {
+            if (drop[i] == null) {
+                this.drop[i] = Items.HEAVY_ARMOR.getItem();
+            }
         }
     }
 }

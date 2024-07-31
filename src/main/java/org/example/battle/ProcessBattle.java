@@ -138,6 +138,7 @@ public class ProcessBattle extends JPanel implements ActionListener {
         if (drop != null) {
             player.addItemToInventory(drop);
             appendLog("%s выбивает %s!".formatted(player.getName(), drop.getName()));
+            inventoryDesc.updateInventory(this);
         }
 
         showResetButton();

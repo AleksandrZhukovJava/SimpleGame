@@ -9,6 +9,7 @@ import org.example.player.dto.AttackResult;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Player {
@@ -212,6 +213,16 @@ public class Player {
             System.out.print("|");
             System.out.println();
         }
+    }
+
+    public Equipment getEquipment() {
+        return equipment;
+    }
+
+    public int getInventoryCellAmount() {
+        return Arrays.stream(inventory)
+                .map(ar -> ar.length)
+                .reduce(0, Integer::sum);
     }
 
     public void backToDefault() {

@@ -17,8 +17,15 @@ public class Pirate extends EnemyLevelOne {
 
     @Override
     protected void addDrop() {
-        for (int i = 0; i < (drop100Percent ? 1000 : 50); i++) {
-            this.drop[i] = Items.NECKLACE.getItem();
+        for (int i = 0; i < (drop100Percent ? 500 : 20);  i++) {
+            if (drop[i] == null) {
+                this.drop[i] = Items.NECKLACE.getItem();
+            }
+        }
+        for (int i = 0; i < (drop100Percent ? 1000 : 20); i++) {
+            if (drop[i] == null) {
+                this.drop[i] = Items.SIMPLE_BOOTS.getItem();
+            }
         }
     }
 }
