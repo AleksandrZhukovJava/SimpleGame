@@ -2,6 +2,7 @@ package org.example.battle;
 
 import org.example.enemy.model.AbstractEnemy;
 import org.example.enemy.model.EnemyStorage;
+import org.example.inventory.InventoryDesc;
 import org.example.items.Item;
 import org.example.options.BattleSpeed;
 import org.example.player.Player;

@@ -1,5 +1,6 @@
-package org.example.battle;
+package org.example.inventory;
 
+import org.example.battle.ProcessBattle;
 import org.example.items.Item;
 import org.example.player.Player;
 
