@@ -43,7 +43,7 @@ public class Player {
     public void draw(Graphics g) {
         Image icon = getPlayerImage();
         if (icon != null) {
-            g.drawImage(icon, 0, 150, 200, 200, null);
+            g.drawImage(icon, 0, 100, 200, 250, null);
         } else {
             g.setColor(Color.BLUE);
             g.fillRect(650, 250, 50, 50);
@@ -51,7 +51,7 @@ public class Player {
     }
 
     public Image getPlayerImage() {
-        URL resource = getClass().getResource("/static/player/player.png");
+        URL resource = getClass().getResource("/static/player/player.jpg");
         if (resource != null) {
             return new ImageIcon(resource).getImage();
         }

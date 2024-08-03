@@ -1,6 +1,5 @@
 package org.example.battle;
 
-import org.example.Game;
 import org.example.enemy.model.AbstractEnemy;
 import org.example.enemy.model.EnemyStorage;
 import org.example.inventory.InventoryDesc;
@@ -9,7 +8,6 @@ import org.example.options.BattleSpeed;
 import org.example.player.Player;
 import org.example.player.dto.Attack;
 import org.example.player.dto.AttackResult;
-import org.example.util.BackgroundPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +24,7 @@ public class ProcessBattle extends JPanel implements ActionListener {
     private final LevelUpChoosingDesc levelUpChoosingDesc = new LevelUpChoosingDesc();
     private final EndGameDesc endGameDesc = new EndGameDesc();
     private final InventoryDesc inventoryDesc = new InventoryDesc();
-    private final JTextArea logArea;
+    private JTextArea logArea;
     private AbstractEnemy enemy;
     private boolean gameOver = false;
     private boolean playerTurn = new Random().nextBoolean();
@@ -45,7 +43,6 @@ public class ProcessBattle extends JPanel implements ActionListener {
         add(restartButton);
         restartButton.setVisible(false);
 
-        // Инициализация панели для журнала
         logArea = new JTextArea(10, 30);
         logArea.setEditable(false);
         logArea.setLineWrap(true);
@@ -65,6 +62,8 @@ public class ProcessBattle extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Image image = new ImageIcon(getClass().getResource("/static/background/battle.jpg")).getImage();
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
         gameDesc.drawDesc(g, player, enemy);
     }
 

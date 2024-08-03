@@ -5,8 +5,30 @@ import org.example.player.Levels;
 import org.example.player.Player;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 
 public class DrawBattleDesc {
+    private void drawTextWithOutline(Graphics2D g2d, String text, Font font, Color textColor, Color outlineColor, int x, int y) {
+        g2d.setFont(font);
+
+        FontRenderContext frc = g2d.getFontRenderContext();
+        TextLayout textLayout = new TextLayout(text, font, frc);
+
+        Shape textShape = textLayout.getOutline(null);
+        AffineTransform transform = AffineTransform.getTranslateInstance(x, y + textLayout.getAscent()); // Перемещаем текст
+        Shape translatedTextShape = transform.createTransformedShape(textShape);
+
+        // Рисуем обводку
+        g2d.setColor(outlineColor);
+        g2d.setStroke(new BasicStroke(2)); // Увеличьте значение для более жирной обводки
+        g2d.draw(translatedTextShape);
+
+        // Рисуем текст
+        g2d.setColor(textColor);
+        g2d.drawString(text, x, y + textLayout.getAscent()); // Обратите внимание на `+ textLayout.getAscent()`
+    }
 
     public void drawDesc(Graphics g, Player player, AbstractEnemy enemy) {
         Graphics2D g2d = (Graphics2D) g;
@@ -32,12 +54,11 @@ public class DrawBattleDesc {
 
         int barWidth = 200;
         int barHeight = 20;
-        int playerBarX = 50;
-        int playerBarY = 80;
-        int enemyBarX = 500;
-        int enemyBarY = 80;
+        int playerBarX = 30;
+        int playerBarY = 60;
+        int enemyBarX = 550;
+        int enemyBarY = 60;
 
-        // Ограничиваем значение здоровья максимумом, чтобы полоска не выходила за рамки
         int playerHealthBarWidth = (int) (Math.min((double) playerHealth / playerMaxHealth, 1.0) * barWidth);
         int enemyHealthBarWidth = (int) (Math.min((double) enemyHealth / enemyMaxHealth, 1.0) * barWidth);
 
@@ -49,73 +70,70 @@ public class DrawBattleDesc {
         g.fillRect(playerBarX, playerBarY, playerHealthBarWidth, barHeight);
         g.fillRect(enemyBarX, enemyBarY, enemyHealthBarWidth, barHeight);
 
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(165, 165, 165));
         g.drawRect(playerBarX, playerBarY, barWidth, barHeight);
         g.drawRect(enemyBarX, enemyBarY, barWidth, barHeight);
 
-        g.setFont(new Font("Cooper Black", Font.BOLD, 18));
-        g.setColor(Color.BLACK);
-        g.drawString("HP: " + playerHealth + "/" + playerMaxHealth, playerBarX, playerBarY - 5);
-        g.drawString("HP: " + enemyHealth + "/" + enemyMaxHealth, enemyBarX, enemyBarY - 5);
+        Font font = new Font("Cooper Black", Font.PLAIN, 18);
+        drawTextWithOutline((Graphics2D) g, "HP: " + playerHealth + "/" + playerMaxHealth, font, new Color(205,205,205),
+                Color.BLACK, playerBarX, playerBarY - 25);
+        drawTextWithOutline((Graphics2D) g, "HP: " + enemyHealth + "/" + enemyMaxHealth, font, new Color(205,205,205), Color.BLACK,
+                enemyBarX, enemyBarY - 25);
     }
 
-    // Остальные методы для отображения характеристик
+    // Остальные методы для отображения характеристик с использованием drawTextWithOutline
     private void drawLevel(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.setColor(Color.BLACK);
-
-        g.drawString("Level:" + player.getLevel(), 50, 370);
-        g.drawString("Level: " + enemy.getLevel(), 600, 370);
+        Font font = new Font("Arial", Font.BOLD, 14);
+        drawTextWithOutline((Graphics2D) g, "Level:" + player.getLevel(), font, new Color(205,205,205), Color.BLACK, 50, 370);
+        drawTextWithOutline((Graphics2D) g, "Level: " + enemy.getLevel(), font, new Color(205,205,205), Color.BLACK, 600, 370);
     }
 
     private void drawHealth(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.setColor(Color.BLACK);
-
-        g.drawString("Health: " + player.getMainHealthWithEquipment(), 50, 390);
-        g.drawString("Health: " + enemy.getMainHealth(), 600, 390);
+        Font font = new Font("Arial", Font.BOLD, 14);
+        drawTextWithOutline((Graphics2D) g, "Health: " + player.getMainHealthWithEquipment(), font, new Color(205,205,205),
+                Color.BLACK, 50, 390);
+        drawTextWithOutline((Graphics2D) g, "Health: " + enemy.getMainHealth(), font, new Color(205,205,205), Color.BLACK, 600,
+                390);
     }
 
     private void drawAttack(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.setColor(Color.BLACK);
-
-        g.drawString("Attack: %s-%s".formatted(player.getCurrentMinDamage(), player.getCurrentMaxDamage()), 50, 410);
-        g.drawString("Attack: %s-%s".formatted(enemy.getMinDamage(), enemy.getMaxDamage()), 600, 410);
+        Font font = new Font("Arial", Font.BOLD, 14);
+        drawTextWithOutline((Graphics2D) g,
+                "Attack: %s-%s".formatted(player.getCurrentMinDamage(), player.getCurrentMaxDamage()), font,
+                new Color(205,205,205), Color.BLACK, 50, 410);
+        drawTextWithOutline((Graphics2D) g, "Attack: %s-%s".formatted(enemy.getMinDamage(), enemy.getMaxDamage()), font,
+                new Color(205,205,205), Color.BLACK, 600, 410);
     }
 
     private void drawExperience(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.setColor(Color.BLACK);
-
-        g.drawString("Experience: %s (%s)".formatted(
+        Font font = new Font("Arial", Font.BOLD, 14);
+        drawTextWithOutline((Graphics2D) g, "Experience: %s (%s)".formatted(
                         player.getExperience(),
                         player.getExperience() - Levels.values()[player.getLevel() - 1].getExperienceNeeded()),
-                50, 430);
-        g.drawString("Experience: %s".formatted(enemy.getExperienceValue()), 600, 430);
+                font, new Color(205,205,205), Color.BLACK, 50, 430);
+        drawTextWithOutline((Graphics2D) g, "Experience: %s".formatted(enemy.getExperienceValue()), font, new Color(205,205,205),
+                Color.BLACK, 600, 430);
     }
 
     private void drawCriticalChance(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.setColor(Color.BLACK);
-
-        g.drawString("Crit chance: %s%%".formatted(player.getCriticalChance()), 50, 450);
-        g.drawString("Crit chance: %s%%".formatted(enemy.getCriticalChance()), 600, 450);
+        Font font = new Font("Arial", Font.BOLD, 14);
+        drawTextWithOutline((Graphics2D) g, "Crit chance: %s%%".formatted(player.getCriticalChance()), font,
+                new Color(205,205,205), Color.BLACK, 50, 450);
+        drawTextWithOutline((Graphics2D) g, "Crit chance: %s%%".formatted(enemy.getCriticalChance()), font, new Color(205,205,205),
+                Color.BLACK, 600, 450);
     }
 
     private void drawMissingChance(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.setColor(Color.BLACK);
-
-        g.drawString("Miss chance: %s%%".formatted(player.getMissingChance()), 50, 470);
-        g.drawString("Miss chance: %s%%".formatted(enemy.getMissingChance()), 600, 470);
+        Font font = new Font("Arial", Font.BOLD, 14);
+        drawTextWithOutline((Graphics2D) g, "Miss chance: %s%%".formatted(player.getMissingChance()), font, new Color(205,205,205),
+                Color.BLACK, 50, 470);
+        drawTextWithOutline((Graphics2D) g, "Miss chance: %s%%".formatted(enemy.getMissingChance()), font, new Color(205,205,205),
+                Color.BLACK, 600, 470);
     }
 
     private void drawName(Graphics g, Player player, AbstractEnemy enemy) {
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.setColor(Color.BLACK);
-
-        g.drawString("Name: " + player.getName(), 50, 490);
-        g.drawString("Type: " + enemy.getName(), 600, 490);
+        Font font = new Font("Arial", Font.BOLD, 14);
+        drawTextWithOutline((Graphics2D) g, "Name: " + player.getName(), font, new Color(205,205,205), Color.BLACK, 50, 490);
+        drawTextWithOutline((Graphics2D) g, "Type: " + enemy.getName(), font, new Color(205,205,205), Color.BLACK, 600, 490);
     }
 }
