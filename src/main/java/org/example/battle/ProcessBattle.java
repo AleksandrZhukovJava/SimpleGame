@@ -24,11 +24,10 @@ public class ProcessBattle extends JPanel implements ActionListener {
     private final LevelUpChoosingDesc levelUpChoosingDesc = new LevelUpChoosingDesc();
     private final EndGameDesc endGameDesc = new EndGameDesc();
     private final InventoryDesc inventoryDesc = new InventoryDesc();
+    private JTextArea logArea;
     private AbstractEnemy enemy;
     private boolean gameOver = false;
     private boolean playerTurn = new Random().nextBoolean();
-    private final JTextArea logArea;
-
     private JButton inventoryButton;
 
     public ProcessBattle() {
@@ -44,7 +43,6 @@ public class ProcessBattle extends JPanel implements ActionListener {
         add(restartButton);
         restartButton.setVisible(false);
 
-        // Инициализация панели для журнала
         logArea = new JTextArea(10, 30);
         logArea.setEditable(false);
         logArea.setLineWrap(true);
@@ -64,6 +62,8 @@ public class ProcessBattle extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Image image = new ImageIcon(getClass().getResource("/static/background/battle.jpg")).getImage();
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
         gameDesc.drawDesc(g, player, enemy);
     }
 
@@ -121,6 +121,8 @@ public class ProcessBattle extends JPanel implements ActionListener {
         timer.start();
         repaint();
         clearLog();
+        revalidate();
+        repaint();
     }
 
     private void playerWin() {

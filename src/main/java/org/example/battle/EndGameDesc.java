@@ -1,5 +1,7 @@
 package org.example.battle;
 
+import org.example.Game;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,11 +12,11 @@ public class EndGameDesc {
 
         // Создаем панель для кнопки
         JPanel buttonPanel = new JPanel();
-        JButton restartButton = new JButton("Начать заново");
+        JButton restartButton = new JButton("Main menu");
         restartButton.addActionListener(e -> {
             dialog.dispose();
-            processGame.getPlayer().backToDefault();
-            processGame.resetGame();
+            Game game = (Game) SwingUtilities.getWindowAncestor(processGame);
+            game.showMainMenu(); // Возвращаемся на главный экран
         });
         buttonPanel.add(restartButton);
 
