@@ -17,16 +17,19 @@ public class Elemental extends EnemyLevelOne {
 
     @Override
     protected void addDrop() {
-        for (int i = 0; i < (drop100Percent ? 500 : 150); ) {
+        for (int i = 0; i < (drop100Percent ? 333 : 150); i++) {
             if (drop[i] == null) {
                 this.drop[i] = Items.MAGIC_SHIELD.getItem();
-                i++;
             }
         }
-        for (int i = 0; i < (drop100Percent ? 500 : 50); i++) {
+        for (int i = 0; i < (drop100Percent ? 666 : 50); i++) {
             if (drop[i] == null) {
                 this.drop[i] = Items.MAGIC_NECKLACE.getItem();
-                i++;
+            }
+        }
+        for (int i = 0; i < (drop100Percent ? 1000 : 50); i++) {
+            if (drop[i] == null) {
+                this.drop[i] = Items.MAGIC_BOOTS.getItem();
             }
         }
     }

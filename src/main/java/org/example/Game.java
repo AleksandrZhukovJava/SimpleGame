@@ -5,7 +5,7 @@ import org.example.battle.ProcessBattle;
 import javax.swing.*;
 
 /**
- * Hello world!
+ * Hello game!
  *
  */
 public class Game extends JFrame {

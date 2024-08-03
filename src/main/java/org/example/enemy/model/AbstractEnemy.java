@@ -84,6 +84,7 @@ public abstract class AbstractEnemy {
         this.currentHealth = getMainHealth();
     }
 
+    //todo принимать объект Map? и создавать автоматически через super из родителя
     protected abstract void addDrop();
 
     //todo принимать модификаторы?

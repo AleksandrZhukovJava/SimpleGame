@@ -1,7 +1,7 @@
 package org.example.items;
 
 public enum ItemType {
-    HAT,
+    HELM,
     AMULET,
     ARMOR,
     LEFT_HAND,

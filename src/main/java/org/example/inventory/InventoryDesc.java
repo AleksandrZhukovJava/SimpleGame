@@ -2,15 +2,22 @@ package org.example.inventory;
 
 import org.example.battle.ProcessBattle;
 import org.example.items.Item;
+import org.example.items.ItemType;
+import org.example.items.improve.Improve;
 import org.example.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.stream.Collectors;
 
 public class InventoryDesc {
-    private JLabel topLeftImageLabel;
+    private JLabel leftTopLeftImageLabel;
+    private JLabel leftTopRightImageLabel;
+    private JDialog inventoryDialog;
+    private JPanel inventoryPanel;
+    private JPanel rightPanel;
 
     public void openInventory(ProcessBattle processBattle) {
         Player player = processBattle.getPlayer();
@@ -21,21 +28,16 @@ public class InventoryDesc {
         inventoryDialog.setResizable(false);
         inventoryDialog.getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Создаем заголовок
         JLabel titleLabel = new JLabel("Inventory", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Cooper Black", Font.BOLD, 20));
         titleLabel.setForeground(new Color(50, 50, 50));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         inventoryDialog.add(titleLabel, BorderLayout.NORTH);
 
-        // Создаем панель для ячеек с GridLayout
-        JPanel inventoryPanel = new JPanel(new GridLayout(5, 8, 10, 50)); // 5 строк и 8 столбцов
+        inventoryPanel = new JPanel(new GridLayout(5, 8, 10, 50)); // 5 строк и 8 столбцов
 
-        // Создаем ячейки
         for (int x = 0; x < playerInventory.length; x++) {
             for (int y = 0; y < playerInventory[x].length; y++) {
-                final int finalX = x;
-                final int finalY = y;
                 final Item item = player.getInventory()[x][y];
                 final JLabel cellLabel = new JLabel();
                 cellLabel.setPreferredSize(new Dimension(50, 50));
@@ -44,40 +46,7 @@ public class InventoryDesc {
                     ImageIcon imageIcon = new ImageIcon(getClass().getResource(item.getImagePath()));
                     Image img = imageIcon.getImage().getScaledInstance(81, 79, Image.SCALE_SMOOTH);
                     cellLabel.setIcon(new ImageIcon(img));
-                    cellLabel.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            player.equipItem(finalX, finalY);
-
-                            Item oldItem = playerInventory[finalX][finalY];
-                            if (oldItem != null) {
-                                ImageIcon imageIcon = new ImageIcon
-                                        (getClass().getResource(playerInventory[finalX][finalY].getImagePath()));
-                                Image img = imageIcon.getImage().getScaledInstance(81, 79, Image.SCALE_SMOOTH);
-                                cellLabel.setIcon(new ImageIcon(img));
-                            } else {
-                                cellLabel.setIcon(null);
-                            }
-                            processBattle.repaint();
-                        }
-
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            Item oldItem = playerInventory[finalX][finalY];
-                            if (oldItem != null) {
-                                ImageIcon hoveredImageIcon = new ImageIcon(
-                                        getClass().getResource(playerInventory[finalX][finalY].getImagePath()));
-                                Image hoveredImg = hoveredImageIcon.getImage()
-                                        .getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                                topLeftImageLabel.setIcon(new ImageIcon(hoveredImg));
-                            }
-                        }
-
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            topLeftImageLabel.setIcon(null);
-                        }
-                    });
+                    cellLabel.addMouseListener(getInventoryCellsMouseListener(cellLabel, processBattle, x, y));
                 }
 
                 cellLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -89,6 +58,7 @@ public class InventoryDesc {
         }
 
         drawLeftPanel(inventoryDialog, inventoryPanel);
+        rightPanel = drawRightPanel(inventoryDialog, player);
 
         JButton closeButton = new JButton("Close");
         closeButton.setFont(new Font("Arial", Font.BOLD, 16));
@@ -101,7 +71,7 @@ public class InventoryDesc {
         buttonPanel.add(closeButton);
         inventoryDialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        inventoryDialog.setSize(1200, 800);
+        inventoryDialog.setSize(1600, 800);
         inventoryDialog.setLocationRelativeTo(null);
         inventoryDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -109,77 +79,282 @@ public class InventoryDesc {
     }
 
     private void drawLeftPanel(JDialog inventoryDialog, JPanel inventoryPanel) {
-        // Создаем панель слева с BoxLayout
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setPreferredSize(new Dimension(400, 800));
         leftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         inventoryDialog.add(leftPanel, BorderLayout.WEST);
 
-        // Создаем верхнюю квадратную панель и добавляем ее в верхнюю часть leftPanel
         JPanel topLeftPanelContainer = new JPanel(new BorderLayout());
         topLeftPanelContainer.setMaximumSize(
-                new Dimension(400, 200)); // Устанавливаем максимальные размеры для контейнера
+                new Dimension(400, 200));
         topLeftPanelContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
         JPanel topLeftPanel = new JPanel();
-        topLeftPanel.setPreferredSize(new Dimension(200, 200)); // размеры квадратной панели
-        topLeftPanel.setMaximumSize(new Dimension(200, 200)); // максимальные размеры квадратной панели
+        topLeftPanel.setPreferredSize(new Dimension(200, 200));
+        topLeftPanel.setMaximumSize(new Dimension(200, 200));
         topLeftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        topLeftImageLabel = new JLabel();
-        topLeftImageLabel.setPreferredSize(new Dimension(190, 189)); // Устанавливаем размер лейбла для изображения
-        topLeftImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        topLeftImageLabel.setVerticalAlignment(SwingConstants.CENTER);
-        topLeftPanel.add(topLeftImageLabel, BorderLayout.CENTER); // Добавляем лейбл в центр панели
+        leftTopLeftImageLabel = new JLabel();
+        leftTopLeftImageLabel.setPreferredSize(new Dimension(190, 189));
+        leftTopLeftImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        leftTopLeftImageLabel.setVerticalAlignment(SwingConstants.CENTER);
+        topLeftPanel.add(leftTopLeftImageLabel, BorderLayout.CENTER);
         topLeftPanelContainer.add(topLeftPanel, BorderLayout.WEST);
 
-        // Создаем второй квадрат и добавляем его вправо от первого
         JPanel topRightPanel = new JPanel();
-        topRightPanel.setPreferredSize(new Dimension(200, 200)); // размеры второго квадрата
-        topRightPanel.setMaximumSize(new Dimension(200, 200)); // максимальные размеры второго квадрата
+        topRightPanel.setPreferredSize(new Dimension(200, 200));
+        topRightPanel.setMaximumSize(new Dimension(200, 200));
         topRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         topLeftPanelContainer.add(topRightPanel, BorderLayout.EAST);
 
+        leftTopRightImageLabel = new JLabel();
+        leftTopRightImageLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        leftTopRightImageLabel.setVerticalAlignment(SwingConstants.TOP);
+        leftTopRightImageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        leftTopRightImageLabel.setOpaque(true);
+        leftTopRightImageLabel.setBackground(Color.WHITE);
+        topRightPanel.add(leftTopRightImageLabel);
+
         leftPanel.add(topLeftPanelContainer);
 
-        // Создаем нижнюю прямоугольную панель и добавляем ее в оставшуюся часть leftPanel
         JPanel bottomLeftPanelContainer = new JPanel(new BorderLayout());
         bottomLeftPanelContainer.setMaximumSize(
-                new Dimension(400, 412)); // Устанавливаем максимальные размеры для контейнера
+                new Dimension(400, 412));
         bottomLeftPanelContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
         JPanel bottomLeftPanel = new JPanel();
-        bottomLeftPanel.setPreferredSize(new Dimension(400, 412)); // размеры прямоугольной панели
+        bottomLeftPanel.setPreferredSize(new Dimension(400, 412));
         bottomLeftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         bottomLeftPanelContainer.add(bottomLeftPanel, BorderLayout.WEST);
         leftPanel.add(bottomLeftPanelContainer);
 
-        // Добавляем панель с ячейками в окно
         inventoryDialog.add(inventoryPanel, BorderLayout.CENTER);
     }
 
-    private void showCellInfo(Item item) {
-        JDialog cellInfoDialog = new JDialog((Frame) null, "Cell Information", true);
-        cellInfoDialog.setLayout(new BorderLayout());
+    private JPanel drawRightPanel(JDialog inventoryDialog, Player player) {
+        JPanel rightPanel = new JPanel(new GridBagLayout());
+        rightPanel.setPreferredSize(new Dimension(400, 800));
+        rightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        rightPanel.setBackground(Color.BLACK);
+        inventoryDialog.add(rightPanel, BorderLayout.EAST);
 
-        JLabel infoLabel = new JLabel(item.getName(), SwingConstants.CENTER);
-        infoLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        cellInfoDialog.add(infoLabel, BorderLayout.CENTER);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-        JButton closeInfoButton = new JButton("Close");
-        closeInfoButton.setFont(new Font("Arial", Font.BOLD, 16));
-        closeInfoButton.setPreferredSize(new Dimension(100, 50));
-        closeInfoButton.setMinimumSize(new Dimension(100, 50));
-        closeInfoButton.setMaximumSize(new Dimension(100, 50));
-        closeInfoButton.addActionListener(e -> cellInfoDialog.dispose()); // Закрываем диалоговое окно
+        int cellSize = 110;
 
-        JPanel infoButtonPanel = new JPanel();
-        infoButtonPanel.add(closeInfoButton);
-        cellInfoDialog.add(infoButtonPanel, BorderLayout.SOUTH);
+        // Шлем
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        JLabel helmetLabel = createEquipmentSlot(player.getEquipment().getEquipment().get(ItemType.HELM));
+        helmetLabel.setPreferredSize(new Dimension(cellSize, cellSize));
+        helmetLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        helmetLabel.putClientProperty("ItemType", ItemType.HELM);
+        rightPanel.add(helmetLabel, gbc);
 
-        cellInfoDialog.setSize(200, 250);
-        cellInfoDialog.setLocationRelativeTo(null);
-        cellInfoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        // Амулет
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        JLabel amuletLabel = createEquipmentSlot(player.getEquipment().getEquipment().get(ItemType.AMULET));
+        amuletLabel.setPreferredSize(new Dimension(cellSize, cellSize));
+        amuletLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        amuletLabel.putClientProperty("ItemType", ItemType.AMULET);
+        rightPanel.add(amuletLabel, gbc);
 
-        cellInfoDialog.setVisible(true);
+        // Левая рука (меч)
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel leftHandLabel = createEquipmentSlot(player.getEquipment().getEquipment().get(ItemType.LEFT_HAND));
+        leftHandLabel.setPreferredSize(new Dimension(cellSize, cellSize));
+        leftHandLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        leftHandLabel.putClientProperty("ItemType", ItemType.LEFT_HAND);
+        rightPanel.add(leftHandLabel, gbc);
+
+        // Броня (центр)
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        JLabel armorLabel = createEquipmentSlot(player.getEquipment().getEquipment().get(ItemType.ARMOR));
+        armorLabel.setPreferredSize(new Dimension(cellSize, cellSize));
+        armorLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        armorLabel.putClientProperty("ItemType", ItemType.ARMOR);
+        rightPanel.add(armorLabel, gbc);
+
+        // Правая рука (меч)
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        JLabel rightHandLabel = createEquipmentSlot(player.getEquipment().getEquipment().get(ItemType.RIGHT_HAND));
+        rightHandLabel.setPreferredSize(new Dimension(cellSize, cellSize));
+        rightHandLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        rightHandLabel.putClientProperty("ItemType", ItemType.RIGHT_HAND);
+        rightPanel.add(rightHandLabel, gbc);
+
+        // Штаны
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        JLabel pantsLabel = createEquipmentSlot(player.getEquipment().getEquipment().get(ItemType.PANTS));
+        pantsLabel.setPreferredSize(new Dimension(cellSize, cellSize));
+        pantsLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        pantsLabel.putClientProperty("ItemType", ItemType.PANTS);
+        rightPanel.add(pantsLabel, gbc);
+
+        // Сапоги
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        JLabel bootsLabel = createEquipmentSlot(player.getEquipment().getEquipment().get(ItemType.BOOTS));
+        bootsLabel.setPreferredSize(new Dimension(cellSize, cellSize));
+        bootsLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        bootsLabel.putClientProperty("ItemType", ItemType.BOOTS);
+        rightPanel.add(bootsLabel, gbc);
+
+        return rightPanel;
+    }
+
+    private JLabel createEquipmentSlot(Item item) {
+        JLabel slotLabel = new JLabel();
+        slotLabel.setPreferredSize(new Dimension(50, 50));
+
+        if (item != null) {
+            ImageIcon imageIcon = new ImageIcon(getClass().getResource(item.getImagePath()));
+            Image img = imageIcon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+            slotLabel.setIcon(new ImageIcon(img));
+            slotLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // Логика для экипировки
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    ImageIcon hoveredImageIcon = new ImageIcon(getClass().getResource(item.getImagePath()));
+                    Image hoveredImg = hoveredImageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    leftTopLeftImageLabel.setIcon(new ImageIcon(hoveredImg));
+                    String itemDescription = item.getImproves().stream()
+                            .map(Improve::getDescription)
+                            .collect(Collectors.joining("<br>"));
+
+                    String htmlText = String.format("<html>%s</html>", itemDescription);
+                    leftTopRightImageLabel.setText(htmlText);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    leftTopLeftImageLabel.setIcon(null);
+                    leftTopRightImageLabel.setText(null);
+                }
+            });
+        }
+
+        slotLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        slotLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        slotLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+        return slotLabel;
+    }
+
+    public void updateInventory(ProcessBattle processBattle) {
+        Player player = processBattle.getPlayer();
+        Component[] components;
+
+        if (inventoryPanel != null) {
+            components = inventoryPanel.getComponents();
+        } else {
+            components = new Component[player.getInventoryCellAmount()];
+        }
+
+        int index = 0;
+        Item[][] playerInventory = player.getInventory();
+
+        for (int x = 0; x < playerInventory.length; x++) {
+            for (int y = 0; y < playerInventory[x].length; y++) {
+                JLabel cellLabel = (JLabel) components[index++];
+                Item item = playerInventory[x][y];
+
+                if (item != null) {
+                    ImageIcon imageIcon = new ImageIcon(getClass().getResource(item.getImagePath()));
+                    Image img = imageIcon.getImage().getScaledInstance(81, 79, Image.SCALE_SMOOTH);
+                    cellLabel.setIcon(new ImageIcon(img));
+                } else {
+                    cellLabel.setIcon(null);
+                }
+
+                // Обновляем MouseListener для каждой ячейки
+                cellLabel.removeMouseListener(getInventoryCellsMouseListener(cellLabel, processBattle, x, y));
+                cellLabel.addMouseListener(getInventoryCellsMouseListener(cellLabel, processBattle, x, y));
+            }
+        }
+
+        rightPanel.revalidate();
+        rightPanel.repaint();
+        inventoryPanel.revalidate();
+        inventoryPanel.repaint();
+    }
+
+    private void updateRightPanel(Player player) {
+        for (Component component : rightPanel.getComponents()) {
+            JLabel slotLabel = (JLabel) component;
+            ItemType itemType = (ItemType) slotLabel.getClientProperty("ItemType");
+            Item item = player.getEquipment().getEquipment().get(itemType);
+
+            if (item != null) {
+                ImageIcon imageIcon = new ImageIcon(getClass().getResource(item.getImagePath()));
+                Image img = imageIcon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+                slotLabel.setIcon(new ImageIcon(img));
+            } else {
+                slotLabel.setIcon(null);
+            }
+        }
+    }
+
+    private MouseAdapter getInventoryCellsMouseListener(
+            JLabel cellLabel,
+            ProcessBattle processBattle,
+            final int x,
+            final int y) {
+        Player player = processBattle.getPlayer();
+        Item[][] playerInventory = player.getInventory();
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                player.equipItem(x, y);
+
+                Item oldItem = playerInventory[x][y];
+                if (oldItem != null) {
+                    ImageIcon imageIcon = new ImageIcon
+                            (getClass().getResource(playerInventory[x][y].getImagePath()));
+                    Image img = imageIcon.getImage().getScaledInstance(81, 79, Image.SCALE_SMOOTH);
+                    cellLabel.setIcon(new ImageIcon(img));
+                } else {
+                    cellLabel.setIcon(null);
+                }
+
+                updateRightPanel(player);
+                leftTopLeftImageLabel.setIcon(null);
+                leftTopRightImageLabel.setText(null);
+                processBattle.repaint();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                Item oldItem = playerInventory[x][y];
+                if (oldItem != null) {
+                    ImageIcon hoveredImageIcon = new ImageIcon(
+                            getClass().getResource(playerInventory[x][y].getImagePath()));
+                    Image hoveredImg = hoveredImageIcon.getImage()
+                            .getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    leftTopLeftImageLabel.setIcon(new ImageIcon(hoveredImg));
+                    String itemDescription = oldItem.getImproves().stream()
+                            .map(Improve::getDescription)
+                            .collect(Collectors.joining("<br>"));
+
+                    String htmlText = String.format("<html>%s</html>", itemDescription);
+                    leftTopRightImageLabel.setText(htmlText);
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                leftTopLeftImageLabel.setIcon(null);
+                leftTopRightImageLabel.setText(null);
+            }
+        };
     }
 }

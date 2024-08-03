@@ -25,7 +25,7 @@ public class DrawBattleDesc {
     }
 
     private void drawCurrentHealth(Graphics g, Player player, AbstractEnemy enemy) {
-        int playerHealth = player.getCurrentHealthWithEquipment();
+        int playerHealth = player.getCurrentHealth();
         int playerMaxHealth = player.getMainHealthWithEquipment();
         int enemyHealth = enemy.getCurrentHealth();
         int enemyMaxHealth = enemy.getMainHealth();
@@ -37,8 +37,9 @@ public class DrawBattleDesc {
         int enemyBarX = 500;
         int enemyBarY = 80;
 
-        int playerHealthBarWidth = (int) ((double) playerHealth / playerMaxHealth * barWidth);
-        int enemyHealthBarWidth = (int) ((double) enemyHealth / enemyMaxHealth * barWidth);
+        // Ограничиваем значение здоровья максимумом, чтобы полоска не выходила за рамки
+        int playerHealthBarWidth = (int) (Math.min((double) playerHealth / playerMaxHealth, 1.0) * barWidth);
+        int enemyHealthBarWidth = (int) (Math.min((double) enemyHealth / enemyMaxHealth, 1.0) * barWidth);
 
         g.setColor(new Color(90, 0, 0));
         g.fillRect(playerBarX, playerBarY, barWidth, barHeight);
