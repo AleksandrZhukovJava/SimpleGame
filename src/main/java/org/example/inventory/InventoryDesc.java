@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class InventoryDesc {
     private JLabel leftTopLeftImageLabel;
     private JLabel leftTopRightImageLabel;
-    private JDialog inventoryDialog;
     private JPanel inventoryPanel;
     private JPanel rightPanel;
 

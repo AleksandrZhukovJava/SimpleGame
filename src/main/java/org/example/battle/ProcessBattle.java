@@ -1,5 +1,6 @@
 package org.example.battle;
 
+import org.example.Game;
 import org.example.enemy.model.AbstractEnemy;
 import org.example.enemy.model.EnemyStorage;
 import org.example.inventory.InventoryDesc;
@@ -8,6 +9,7 @@ import org.example.options.BattleSpeed;
 import org.example.player.Player;
 import org.example.player.dto.Attack;
 import org.example.player.dto.AttackResult;
+import org.example.util.BackgroundPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,11 +26,10 @@ public class ProcessBattle extends JPanel implements ActionListener {
     private final LevelUpChoosingDesc levelUpChoosingDesc = new LevelUpChoosingDesc();
     private final EndGameDesc endGameDesc = new EndGameDesc();
     private final InventoryDesc inventoryDesc = new InventoryDesc();
+    private final JTextArea logArea;
     private AbstractEnemy enemy;
     private boolean gameOver = false;
     private boolean playerTurn = new Random().nextBoolean();
-    private final JTextArea logArea;
-
     private JButton inventoryButton;
 
     public ProcessBattle() {
@@ -121,6 +122,8 @@ public class ProcessBattle extends JPanel implements ActionListener {
         timer.start();
         repaint();
         clearLog();
+        revalidate();
+        repaint();
     }
 
     private void playerWin() {
