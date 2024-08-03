@@ -1,7 +1,7 @@
 package org.example.player;
 
 import org.example.items.Item;
-import org.example.items.improve.ImproveType;
+import org.example.items.improve.ImproveTarget;
 import org.example.operations.InventoryIsFullException;
 import org.example.player.dto.Attack;
 import org.example.player.dto.AttackResult;
@@ -59,15 +59,15 @@ public class Player {
     }
 
     public int getCurrentDamage() {
-        return random.nextInt(currentMinDamage, currentMaxDamage) + equipment.getAdditionalAmount(ImproveType.ATTACK);
+        return random.nextInt(currentMinDamage, currentMaxDamage) + equipment.getAdditionalAmount(ImproveTarget.ATTACK);
     }
 
     public int getCurrentHealthWithEquipment() {
-        return currentHealth + equipment.getAdditionalAmount(ImproveType.HEALTH);
+        return currentHealth + equipment.getAdditionalAmount(ImproveTarget.HEALTH);
     }
 
     public int getCriticalChance() {
-        return criticalChance + equipment.getAdditionalAmount(ImproveType.CRITICAL_CHANCE);
+        return criticalChance + equipment.getAdditionalAmount(ImproveTarget.CRITICAL_CHANCE);
     }
 
     public int getCurrentHealth() {
@@ -75,19 +75,19 @@ public class Player {
     }
 
     public int getMissingChance() {
-        return missingChance + equipment.getAdditionalAmount(ImproveType.MISSING_CHANCE);
+        return missingChance + equipment.getAdditionalAmount(ImproveTarget.MISSING_CHANCE);
     }
 
     public int getMainHealthWithEquipment() {
-        return mainHealth + equipment.getAdditionalAmount(ImproveType.HEALTH);
+        return mainHealth + equipment.getAdditionalAmount(ImproveTarget.HEALTH);
     }
 
     public int getCurrentMinDamage() {
-        return currentMinDamage + equipment.getAdditionalAmount(ImproveType.ATTACK);
+        return currentMinDamage + equipment.getAdditionalAmount(ImproveTarget.ATTACK);
     }
 
     public int getCurrentMaxDamage() {
-        return currentMaxDamage + equipment.getAdditionalAmount(ImproveType.ATTACK);
+        return currentMaxDamage + equipment.getAdditionalAmount(ImproveTarget.ATTACK);
     }
 
     public int getExperience() {
@@ -96,7 +96,7 @@ public class Player {
 
     //todo придумать как динамически защищать
     public int getLevelUpOptionsAmount() {
-        int amount = levelUpOptionsAmount + equipment.getAdditionalAmount(ImproveType.LVL_UP_CHOICE_AMOUNT_IMPROVE);
+        int amount = levelUpOptionsAmount + equipment.getAdditionalAmount(ImproveTarget.LVL_UP_CHOICE_AMOUNT_IMPROVE);
         return Math.min(amount, 4);
     }
 
@@ -201,7 +201,6 @@ public class Player {
         }
         Item oldItem = equipment.getEquipment().put(item.getType(), item);
         inventory[x][y] = oldItem;
-
     }
 
     @Deprecated
